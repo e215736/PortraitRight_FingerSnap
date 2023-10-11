@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    margin: 0 auto; /* Center the content horizontally */
+}
+
+.image-container {
+    flex-shrink: 0; /* Prevent image from shrinking */
+    margin-right: 10px; /* Adjust margin as needed */
+}
+
+.text-container {
+    flex-grow: 1; /* Allow the text to take remaining space */
+}
+
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Set the container height to 100% of viewport height */
+}
