@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="200">
+    </div>
+    <div class="text-container">
+        <h1>肖像権指パッチン</h1>
+    </div>
+</div>
+
+<h1>画像加工アプリ</h1>
+<p>画像の加工が完了しました</p>
+<!-- 加工前と加工後の画像を表示 -->
+<img src="static/up/{{ original }}" alt="original" width="49%">
+<img src="static/up/{{ processed }}" alt="processed" width="49%">
+
+<script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
+{% endblock %}
