@@ -10,19 +10,13 @@
     </div>
 </div>
 
+<h1>画像加工アプリ</h1>
+<p>画像ファイルを選択してください</p>
+<!-- ファイル選択とアップロードのフォーム -->
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" value="アップロード">
+</form>
 
-<div class="centered-container">
-    <div class="button-container">
-        <form method="get">
-            <a class="btn btn-flat" role="button"><span>画像をアップロードする</span></a>
-        </form>
-    </div>
-</div>
-
-
-
-
-
-</div>
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
 {% endblock %}
