@@ -8,6 +8,7 @@
     <div class="text-container">
         <h1>肖像権指パッチン</h1>
     </div>
+
 </div>
 
 <h1>画像加工アプリ</h1>
@@ -15,6 +16,12 @@
 <!-- 加工前と加工後の画像を表示 -->
 <img src="static/up/{{ original }}" alt="original" width="49%">
 <img src="static/up/{{ processed }}" alt="processed" width="49%">
+
+<div class="button.btn ">
+    <form action="/" method="get">
+        <a href="/" class="btn btn-flat" role="button"><span>新しく画像を加工する</span></a>
+    </form>
+</div>
 
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
 {% endblock %}
