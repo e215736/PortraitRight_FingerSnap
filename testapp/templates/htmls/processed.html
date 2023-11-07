@@ -1,27 +1,30 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container"><div class="flex">
     <div class="image-container">
-        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="200">
+        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170">
     </div>
     <div class="text-container">
-        <h1>肖像権指パッチン</h1>
+        <h2>肖像権指パッチン</h2>
     </div>
-
 </div>
-
-<h1>画像加工アプリ</h1>
-<p>画像の加工が完了しました</p>
+<p><h2>画像の加工が完了しました</h2></p>
+</div>
 <!-- 加工前と加工後の画像を表示 -->
-<img src="static/up/{{ original }}" alt="original" width="49%">
-<img src="static/up/{{ processed }}" alt="processed" width="49%">
 
-<div class="button.btn ">
+<img src="{{ url_for('static', filename='up/' + original) }}" alt="original" width="49%">
+<img src="{{ url_for('static', filename='down/' + processed) }}" alt="processed" width="49%">
+
+
+<div class="button.btn "><div class="container">
+    <br>
     <form action="/" method="get">
-        <a href="/" class="btn btn-flat" role="button"><span>新しく画像を加工する</span></a>
+        <a href="/" class="button">新しく画像を加工する</a>
+        <!-- ダウンロードボタンを追加 -->
+        <a href="{{ url_for('static', filename='down/' + processed) }}" download="downloaded_{{ processed }}" class="button" role="button"><span>加工後の画像をダウンロードする</span></a>
     </form>
-</div>
+</div></div>
 
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
 {% endblock %}
