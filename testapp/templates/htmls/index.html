@@ -1,22 +1,57 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container"><div class="flex">
     <div class="image-container">
-        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="200">
+        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170">
     </div>
     <div class="text-container">
-        <h1>肖像権指パッチン</h1>
+        <h2>肖像権指パッチン</h2>
     </div>
 </div>
 
-<h1>画像加工アプリ</h1>
-<p>画像ファイルを選択してください</p>
+<div class="text-container">
+<p ><h2>画像の顔を自動で隠します！</h2></p>
+</div>
+<br>
+
+<h1>❶加工する画像を選択してください</h1>
+
 <!-- ファイル選択とアップロードのフォーム -->
 <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="file">
-    <input type="submit" value="アップロード">
-</form>
+    <br>
+    <br>
+    <!-- ラジオボタンで処理を選択 -->
 
+    <br><h1>❷顔に適用する処理を選択してください</h1>
+    
+    <input id="item-1" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
+    <label class="radio-inline__label" for="item-1">
+        モザイク
+    </label>
+    <input id="item-2" class="radio-inline__input" type="radio" name="option" value="blur"/>
+    <label class="radio-inline__label" for="item-2">
+        ぼかし
+    </label>
+    <input id="stamp" class="radio-inline__input" type="radio" name="option" value="stamp"/>
+    <label class="radio-inline__label" for="stamp">
+        スタンプ
+    </label>
+
+    <br>
+
+    <!-- スタンプ用の画像を選択するフォームを追加する -->
+    <div id="stamp_form" style="display: none;">
+        <br>
+        <h3>スタンプ用の画像ファイルを選択してください</h3>
+        <input type="file" name="stamp">
+    </div>
+    <br>
+    <br>
+    <input type="submit" value="加工する！" class="button">
+</form>
+<br>
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
+
 {% endblock %}
