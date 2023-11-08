@@ -19,7 +19,7 @@
 
 <!-- ファイル選択とアップロードのフォーム -->
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file">
+    <input type="file" name="file" required>
     <br>
     <br>
     <!-- ラジオボタンで処理を選択 -->
@@ -27,6 +27,7 @@
     <br><h1>❷顔に適用する処理を選択してください</h1>
     
     <input id="item-1" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
+
     <label class="radio-inline__label" for="item-1">
         モザイク
     </label>
@@ -46,6 +47,16 @@
         <br>
         <h3>スタンプ用の画像ファイルを選択してください</h3>
         <input type="file" name="stamp">
+        <br>
+        <h3>または、デフォルトのスタンプをクリックしてください</h3>
+        <!-- デフォルトのスタンプを画像として表示する -->
+        <div id="default_stamps">
+            {% for stamp in default_stamps %}
+            <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
+            {% endfor %}
+        </div>
+        <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
+        <input type="hidden" name="default_stamp" id="default_stamp">
     </div>
     <br>
     <br>

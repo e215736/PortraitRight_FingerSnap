@@ -88,3 +88,8 @@ p {
     text-decoration: none;
     font-weight:bold;
 }
+
+.default_stamp {
+    height: 100px;
+    width: auto;
+}
