@@ -1,15 +1,44 @@
-from flask import render_template, request, send_from_directory
+from flask import render_template, request
 from testapp import app
 import numpy as np
 import cv2
 import dlib
 import os
+import time
+import datetime
 
 detector = dlib.get_frontal_face_detector()
 
+# デフォルトのスタンプのファイル名のリストを作成する
+# (デフォルトスタンプを追加・変更・削除する場合サーバを再度立ち上げる)
+# もしくは、@app.route('/') def index(): この中にコードを移動する
+default_stamps = os.listdir('testapp/static/default_stamp')
+
 @app.route('/')
 def index():
-    return render_template('htmls/index.html')
+
+    # 画像ファイルが保存されているディレクトリのパス
+    image_dirs = ['testapp/static/up/', 'testapp/static/down/', 'testapp/static/stamp/']
+
+    # 現在の日時を取得
+    now = datetime.datetime.now()
+
+    # リスト内の各ディレクトリに対してループ
+    for image_dir in image_dirs:
+        # ディレクトリ内の画像ファイルを走査
+        for filename in os.listdir(image_dir):
+            # 画像ファイルのフルパスを作成
+            filepath = os.path.join(image_dir, filename)
+            # 画像ファイルの更新日時を取得
+            mtime = os.path.getmtime(filepath)
+            # 更新日時をdatetimeオブジェクトに変換
+            mtime = datetime.datetime.fromtimestamp(mtime)
+            # 現在の日時との差分を計算
+            diff = now - mtime
+            # 差分が1時間以上なら画像ファイルを削除
+            if diff > datetime.timedelta(seconds=30):
+                os.remove(filepath)
+    return render_template('htmls/index.html', default_stamps=default_stamps)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -35,12 +64,24 @@ def upload():
             face_img = cv2.blur(face_img, (30, 30))
             img[y1:y2, x1:x2] = face_img
     elif option == 'stamp':
+        # フォームからスタンプの画像を取得する
         stamp_file = request.files['stamp']
-        if not stamp_file:
+        # 隠しフィールドからデフォルトのスタンプのファイル名を取得する
+        default_stamp = request.form.get('default_stamp')
+        # どちらかがあれば処理を続ける
+        if stamp_file or default_stamp:
+            # フォームからスタンプの画像があればそれを使う
+            if stamp_file:
+                stamp_filename = stamp_file.filename
+                stamp_filename = str(time.time()) + '_' + stamp_filename
+                stamp_file.save('testapp/static/stamp/' + stamp_filename)
+                stamp = cv2.imread('testapp/static/stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
+            # フォームからスタンプの画像がなければデフォルトのスタンプを使う
+            else:
+                stamp_filename = default_stamp
+                stamp = cv2.imread('testapp/static/default_stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
+        else:
             return 'スタンプ用の画像がありません'
-        stamp_filename = stamp_file.filename
-        stamp_file.save('testapp/static/stamp/' + stamp_filename)
-        stamp = cv2.imread('testapp/static/stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
         for face in faces:
             x1, y1, x2, y2 = face.left(), face.top(), face.right(), face.bottom()
             face_img = img[y1:y2, x1:x2]
