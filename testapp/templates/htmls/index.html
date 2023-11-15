@@ -7,6 +7,7 @@
     </div>
     <div class="text-container">
         <h2>肖像権指パッチン</h2>
+        <a href="https://docs.google.com/document/d/1OEpoBB9DtwWiP6YmjgQovh9EyFBZ-AH8vUmGbsJu34c/edit?usp=sharing">フィードバックしてね</a>
     </div>
 </div>
 
@@ -19,7 +20,7 @@
 
 <!-- ファイル選択とアップロードのフォーム -->
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" required>
+    <input type="file" name="file" accept="image/*" required>
     <br>
     <br>
     <!-- ラジオボタンで処理を選択 -->
@@ -58,6 +59,18 @@
         <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
         <input type="hidden" name="default_stamp" id="default_stamp">
     </div>
+    <br>
+    <br>
+    <!-- ラジオボタンで自動処理と手動処理を選択する -->
+    <h1>❸自動処理と手動処理を選択してください</h1>
+    <input id="auto" class="radio-inline__input" type="radio" name="type" value="auto" checked="checked"/>
+    <label class="radio-inline__label" for="auto">
+        自動処理
+    </label>
+    <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
+    <label class="radio-inline__label" for="manual">
+        手動処理(スタンプ未対応)
+    </label>
     <br>
     <br>
     <input type="submit" value="加工する！" class="button">
