@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container"><div class="flex">
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170">
+    </div>
+    <div class="text-container">
+        <h2>肖像権指パッチン</h2>
+    </div>
+</div>
+<p><h2>手動でモザイクなどの処理した部分を元に戻します！</h2></p>
+</div>
+<!-- 処理後の画像を表示 -->
+<img src="{{ url_for('static', filename='down/processed_' + filename) }}" alt="processed" id="processed">
+
+<!-- フォームで処理のオプションと範囲の座標を送信 -->
+<form action="/restore_process" method="post" enctype="multipart/form-data">
+    <!-- 隠しフィールドでファイル名とオプションを送信 -->
+    <input type="hidden" name="filename" value="{{ filename }}">
+    <!-- 隠しフィールドで範囲の座標のリストを送信 -->
+    <input type="hidden" name="faces" id="faces">
+    <br>
+    <br>
+    <input type="submit" value="加工する！" class="button">
+</form>
+<br>
+<script src="{{ url_for('static', filename='javascript/restore.js') }}"></script>
+
+{% endblock %}

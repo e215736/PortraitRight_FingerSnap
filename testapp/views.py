@@ -1,4 +1,4 @@
-from flask import render_template, request, Response, redirect, url_for
+from flask import render_template, request, redirect, url_for
 from testapp import app
 import numpy as np
 import cv2
@@ -15,12 +15,8 @@ detector = dlib.get_frontal_face_detector()
 default_stamps = os.listdir('testapp/static/default_stamp')
 
 def mosaic_process(faces, img):
-    print(faces)
     for face in faces:
-        print(face)
         x1, y1, x2, y2 = face.left(), face.top(), face.right(), face.bottom()
-        print(x1, y1, x2, y2)
-        print(x1, y1, x2, y2)
         face_img = img[y1:y2, x1:x2]
         face_img = cv2.resize(face_img, (10, 10))
         face_img = cv2.resize(face_img, (x2-x1, y2-y1), interpolation=cv2.INTER_NEAREST)
@@ -33,15 +29,47 @@ def blur_process(faces, img):
         face_img = cv2.blur(face_img, (30, 30))
         img[y1:y2, x1:x2] = face_img
         
-def stamp_process(faces, img, stamp):
+def stamp_process(faces, img, stamp, stamp_filename):
+    height, width, channels = img.shape
     for face in faces:
         x1, y1, x2, y2 = face.left(), face.top(), face.right(), face.bottom()
-        x1 -= 100
-        y1 -= 100
-        x2 += 100
-        y2 += 100
+        x = (x2-x1)/2
+        y = (y2-y1)/2
+        if stamp_filename == "bittu.png":
+            y_zure = (y2-y1)*(6/9)
+            y1 -= int(y_zure)
+            y2 -= int(y_zure)
+        if stamp_filename == "bittu2.png":
+            y_zure = (y2-y1)*(10/22)
+            x_zure = (x2-x1)*(5/30)
+            x1 += int(x_zure)
+            x2 += int(x_zure)
+            y1 -= int(y_zure)
+            y2 -= int(y_zure)
+        x1 -= int(x)
+        y1 -= int(y)
+        x2 += int(x)
+        y2 += int(y)
+        x10 = 0
+        x20 = 0
+        y10 = 0
+        y20 = 0
+        if x1 < 0:
+            x10 = 0-x1
+            x1 = 0
+        if y1 < 0:
+            y10 = 0-y1
+            y1 = 0
+        if x2 > width:
+            x20 = x2-width
+            x2 = width
+        if y2 > height:
+            y20 = y2-height
+            y2 = height
         face_img = img[y1:y2, x1:x2]
-        stamp_resized = cv2.resize(stamp, (x2-x1, y2-y1))
+        height2, width2, channels = stamp.shape
+        stamp = stamp[y10:height2-y20, x10:width2-x20] # スタンプのはみ出た部分をカット
+        stamp_resized = cv2.resize(stamp, (x2-x1, y2-y1)) # スタンプのサイズ変更
         stamp_mask = stamp_resized[:, :, 3]
         stamp_mask_inv = cv2.bitwise_not(stamp_mask)
         stamp_resized = stamp_resized[:, :, :3]
@@ -51,12 +79,8 @@ def stamp_process(faces, img, stamp):
         img[y1:y2, x1:x2] = face_img
 
 def mosaic_process2(faces, img):
-    print(faces)
-    print(faces[0])
     for face in faces:
-        print(face)
         x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
-        print(x1, y1, x2, y2)
         face_img = img[y1:y2, x1:x2]
         face_img = cv2.resize(face_img, (10, 10))
         face_img = cv2.resize(face_img, (x2-x1, y2-y1), interpolation=cv2.INTER_NEAREST)
@@ -70,12 +94,23 @@ def blur_process2(faces, img):
         img[y1:y2, x1:x2] = face_img
         
 def stamp_process2(faces, img, stamp):
+    height, width, channels = img.shape
     for face in faces:
         x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
-        x1 -= 100
-        y1 -= 100
-        x2 += 100
-        y2 += 100
+        x = (x2-x1)/2
+        y = (y2-y1)/2
+        x1 -= int(x)
+        y1 -= int(y)
+        x2 += int(x)
+        y2 += int(y)
+        if x1 < 0:
+            x1 = 0
+        if y1 < 0:
+            y1 = 0
+        if x2 > width:
+            x1 = width
+        if y2 > height:
+            y2 = height
         face_img = img[y1:y2, x1:x2]
         stamp_resized = cv2.resize(stamp, (x2-x1, y2-y1))
         stamp_mask = stamp_resized[:, :, 3]
@@ -84,6 +119,15 @@ def stamp_process2(faces, img, stamp):
         face_bg = cv2.bitwise_and(face_img, face_img, mask=stamp_mask_inv)
         face_fg = cv2.bitwise_and(stamp_resized, stamp_resized, mask=stamp_mask)
         face_img = cv2.add(face_bg, face_fg)
+        img[y1:y2, x1:x2] = face_img
+
+# 手動でモザイクなどの処理した部分を元に戻す関数を追加
+def restore_process2(faces, img, original):
+    for face in faces:
+        x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
+        # 加工前の画像から同じ範囲の部分をコピーする
+        face_img = original[y1:y2, x1:x2]
+        # 加工後の画像に上書きする
         img[y1:y2, x1:x2] = face_img
 
 @app.route('/')
@@ -105,6 +149,7 @@ def index():
             # 現在の日時との差分を計算
             diff = now - mtime
             # 差分が1時間以上なら画像ファイルを削除
+            #if diff > datetime.timedelta(hours=1):
             if diff > datetime.timedelta(seconds=30):
                 os.remove(filepath)
     return render_template('htmls/index.html', default_stamps=default_stamps)
@@ -123,7 +168,6 @@ def upload():
         faces = detector(img) # 自動処理の場合
     elif type == 'manual':
         return redirect(url_for('manual', filename=filename, option=option)) # 手動処理の場合は別の画面に遷移
-    print(faces)
     if option == 'mosaic':
         mosaic_process(faces, img)
     elif option == 'blur':
@@ -147,7 +191,7 @@ def upload():
                 stamp = cv2.imread('testapp/static/default_stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
         else:
             return 'スタンプ用の画像がありません'
-        stamp_process(faces, img, stamp)
+        stamp_process(faces, img, stamp, stamp_filename)
     # elif option == 'stamp':
     #     stamp_file = request.files['stamp']
     #     if not stamp_file:
@@ -171,6 +215,7 @@ def manual():
     # 手動処理画面に遷移する
     filename = request.args.get('filename')
     option = request.args.get('option')
+    print(filename)
     return render_template('htmls/manual.html', filename=filename, option=option)
 
 @app.route('/process', methods=['POST'])
@@ -179,9 +224,9 @@ def process():
     filename = request.form.get('filename')
     option = request.form.get('option')
     faces = request.form.get('faces')
-    # facesは文字列なのでリストに変換する
-    faces = eval(faces)
-    print(faces)
+    if len(faces) >= 1:
+        # facesは文字列なのでリストに変換する
+        faces = eval(faces)
     # 画像を読み込む
     img = cv2.imread('testapp/static/up/' + filename)
     # 選択したオプションに応じて処理を行う
@@ -214,3 +259,27 @@ def process():
     # 処理前後の画像を表示する画面に遷移する
     return render_template('htmls/processed.html', original=filename, processed='processed_' + filename)
 
+# 手動でモザイクなどの処理した部分を元に戻すルートを追加
+@app.route('/restore')
+def restore():
+    # 手動でモザイクなどの処理した部分を元に戻す画面に遷移する
+    filename = request.args.get('filename')
+    return render_template('htmls/restore.html', filename=filename)
+
+@app.route('/restore_process', methods=['POST'])
+def restore_process():
+    # 手動でモザイクなどの処理した部分を元に戻す画面から送られたデータを受け取る
+    filename = request.form.get('filename')
+    faces = request.form.get('faces')
+    if len(faces) >= 1:
+        # facesは文字列なのでリストに変換する
+        faces = eval(faces)
+    # 画像を読み込む
+    img = cv2.imread('testapp/static/down/processed_' + filename)
+    # 加工前の画像も読み込む
+    original = cv2.imread('testapp/static/up/' + filename)
+    restore_process2(faces, img, original)
+    # 処理後の画像を保存する
+    cv2.imwrite('testapp/static/down/processed_' + filename, img)
+    # 処理前後の画像を表示する画面に遷移する
+    return render_template('htmls/processed.html', original=filename, processed='processed_' + filename)

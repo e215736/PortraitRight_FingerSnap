@@ -11,20 +11,28 @@
 </div>
 <p><h2>画像の加工が完了しました</h2></p>
 </div>
-<!-- 加工前と加工後の画像を表示 -->
-
-<img src="{{ url_for('static', filename='up/' + original) }}" alt="original" width="49%">
-<img src="{{ url_for('static', filename='down/' + processed) }}" alt="processed" width="49%">
-
+<!-- 処理前の画像と処理後の画像を表示 -->
+<div class="flex">
+    <img src="{{ url_for('static', filename='up/' + original) }}" alt="original" width="50%">
+    <img src="{{ url_for('static', filename='down/' + processed) }}" alt="processed" width="50%">
+</div>
 
 <div class="button.btn "><div class="container">
     <br>
+    <!-- 手動でモザイクなどの処理した部分を元に戻すボタンを追加 -->
+    <form action="/restore" method="get">
+        <!-- 隠しフィールドでファイル名とオプションを送信 -->
+        <input type="hidden" name="filename" value="{{ original }}">
+        <input type="submit" value="処理した部分の一部をを元に戻したい(スマホ未対応)" class="button">
+    </form>
     <form action="/" method="get">
         <a href="/" class="button">新しく画像を加工する</a>
         <!-- ダウンロードボタンを追加 -->
         <a href="{{ url_for('static', filename='down/' + processed) }}" download="downloaded_{{ processed }}" class="button" role="button"><span>加工後の画像をダウンロードする</span></a>
     </form>
-</div></div>
+</div>
+</div>
+<br>
 
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
 {% endblock %}
