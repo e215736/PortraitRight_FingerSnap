@@ -10,23 +10,74 @@ function hideStampForm() {
   stamp_form.style.display = "none";
 }
 
-// ラジオボタンの値に応じてスタンプ用の画像を選択するフォームを表示または非表示にする関数
+// 選択されたオプションとタイプとライブラリに基づいて、適切なフォームを表示または非表示にする関数
 function checkOption() {
   var option = document.querySelector("input[name='option']:checked").value;
+  var type = document.querySelector("input[name='type']:checked").value;
+  var library = document.querySelector("input[name='library']:checked").value;
+
   if (option == "stamp") {
-      showStampForm();
-  } else {
+    if (type != "manual") {
+      showStampForm(); // スタンプ用の画像を選択するフォームを表示する
+    } else {
       hideStampForm();
+    }
+  } else {
+    hideStampForm();
+  }
+  if (type == "auto") {
+    //balloonAを表示させる
+    document.getElementById("balloonA").style.display = "block";
+    //balloonBを表示させない
+    document.getElementById("balloonB").style.display = "none";
+    document.getElementById("library_form").style.display = "block";
+    if (library == "dlib") {
+      //balloonCを表示させる
+      document.getElementById("balloonC").style.display = "block";
+      //balloonDを表示させない
+      document.getElementById("balloonD").style.display = "none";
+    }
+    if (library == "yolov8") {
+      //balloonCを表示させる
+      document.getElementById("balloonD").style.display = "block";
+      //balloonDを表示させない
+      document.getElementById("balloonC").style.display = "none";
+    }
+  }
+  if (type == "manual") {
+    //balloonBを表示させる
+    document.getElementById("balloonB").style.display = "block";
+    //balloonAを表示させない
+    document.getElementById("balloonA").style.display = "none";
+    hideStampForm(); // スタンプ用の画像を選択するフォームを非表示にする
+    //library_formを表示させない
+    document.getElementById("library_form").style.display = "none";
   }
 }
 
-// ページが読み込まれたときにラジオボタンの値をチェックする
-window.onload = function () {
-  checkOption();
-};
+// ページのリロード時にブラウザのスクロール位置の記憶を無効にする
+history.scrollRestoration = 'manual';
+
+// DOMが完全に読み込まれたときに最上部にスクロールする
+document.addEventListener('DOMContentLoaded', function () {
+  window.scrollTo(0, 0); // スクロール位置をページの最上部に設定
+  checkOption(); // 既存の関数を呼び出し
+});
 
 // ラジオボタンが変更されたときにラジオボタンの値をチェックする
 var radios = document.querySelectorAll("input[name='option']");
+for (var i = 0; i < radios.length; i++) {
+  radios[i].addEventListener("change", checkOption);
+}
+
+// ラジオボタンが変更されたときにラジオボタンの値をチェックする
+var radios = document.querySelectorAll("input[name='type']");
+for (var i = 0; i < radios.length; i++) {
+  radios[i].addEventListener("change", checkOption);
+}
+
+// ラジオボタンが変更されたときにラジオボタンの値をチェックする
+var radios = document.querySelectorAll("input[name='library']");
 for (var i = 0; i < radios.length; i++) {
   radios[i].addEventListener("change", checkOption);
 }
@@ -84,4 +135,4 @@ ds.addEventListener("click", function() {
   // スタンプのrequired属性を外す
   stamp.required = false;
 });
-}); 
+});

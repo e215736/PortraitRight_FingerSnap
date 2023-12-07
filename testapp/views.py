@@ -18,7 +18,17 @@ def mosaic_process(faces, img):
     for face in faces:
         x1, y1, x2, y2 = face.left(), face.top(), face.right(), face.bottom()
         face_img = img[y1:y2, x1:x2]
-        face_img = cv2.resize(face_img, (10, 10))
+        height, width, channels = face_img.shape
+        if height >= width:
+            mos = height/width
+            face_img = cv2.resize(face_img, (8, int(8*mos)))
+        else:
+            mos = width/height
+            face_img = cv2.resize(face_img, (int(8*mos), 8))
+        #face_img = cv2.resize(face_img, (8, 8))
+        #if width >= height:
+            #mos = height/10
+        #face_img = cv2.resize(face_img, (int(width/15), int(height/15)))
         face_img = cv2.resize(face_img, (x2-x1, y2-y1), interpolation=cv2.INTER_NEAREST)
         img[y1:y2, x1:x2] = face_img
         
@@ -26,13 +36,90 @@ def blur_process(faces, img):
     for face in faces:
         x1, y1, x2, y2 = face.left(), face.top(), face.right(), face.bottom()
         face_img = img[y1:y2, x1:x2]
-        face_img = cv2.blur(face_img, (30, 30))
+        height, width, channels = face_img.shape
+        #face_img = cv2.blur(face_img, (30, 30))
+        face_img = cv2.blur(face_img, (int(width/5), int(height/5)))
         img[y1:y2, x1:x2] = face_img
         
 def stamp_process(faces, img, stamp, stamp_filename):
     height, width, channels = img.shape
     for face in faces:
         x1, y1, x2, y2 = face.left(), face.top(), face.right(), face.bottom()
+        x = (x2-x1)/2
+        y = (y2-y1)/2
+        if stamp_filename == "bittu.png":
+            y_zure = (y2-y1)*(6/9)
+            y1 -= int(y_zure)
+            y2 -= int(y_zure)
+        if stamp_filename == "bittu2.png":
+            y_zure = (y2-y1)*(10/22)
+            x_zure = (x2-x1)*(5/30)
+            x1 += int(x_zure)
+            x2 += int(x_zure)
+            y1 -= int(y_zure)
+            y2 -= int(y_zure)
+        x1 -= int(x)
+        y1 -= int(y)
+        x2 += int(x)
+        y2 += int(y)
+        x10 = 0
+        x20 = 0
+        y10 = 0
+        y20 = 0
+        if x1 < 0:
+            x10 = 0-x1
+            x1 = 0
+        if y1 < 0:
+            y10 = 0-y1
+            y1 = 0
+        if x2 > width:
+            x20 = x2-width
+            x2 = width
+        if y2 > height:
+            y20 = y2-height
+            y2 = height
+        print(y1, y2, x1, x2)
+        face_img = img[y1:y2, x1:x2]
+        height2, width2, channels = stamp.shape
+        stamp = stamp[y10:height2-y20, x10:width2-x20] # スタンプのはみ出た部分をカット
+        stamp_resized = cv2.resize(stamp, (x2-x1, y2-y1)) # スタンプのサイズ変更
+        stamp_mask = stamp_resized[:, :, 3]
+        stamp_mask_inv = cv2.bitwise_not(stamp_mask)
+        stamp_resized = stamp_resized[:, :, :3]
+        face_bg = cv2.bitwise_and(face_img, face_img, mask=stamp_mask_inv)
+        face_fg = cv2.bitwise_and(stamp_resized, stamp_resized, mask=stamp_mask)
+        face_img = cv2.add(face_bg, face_fg)
+        img[y1:y2, x1:x2] = face_img
+
+def mosaic_process2(faces, img):
+    for face in faces:
+        x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
+        face_img = img[y1:y2, x1:x2]
+        height, width, channels = face_img.shape
+        if height >= width:
+            mos = height/width
+            face_img = cv2.resize(face_img, (8, int(8*mos)))
+        else:
+            mos = width/height
+            face_img = cv2.resize(face_img, (int(8*mos), 8))
+        #face_img = cv2.resize(face_img, (8, 8))
+        #face_img = cv2.resize(face_img, (int(width/15), int(height/15)))
+        face_img = cv2.resize(face_img, (x2-x1, y2-y1), interpolation=cv2.INTER_NEAREST)
+        img[y1:y2, x1:x2] = face_img
+        
+def blur_process2(faces, img):
+    for face in faces:
+        x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
+        face_img = img[y1:y2, x1:x2]
+        height, width, channels = face_img.shape
+        face_img = cv2.blur(face_img, (30, 30))
+        #face_img = cv2.blur(face_img, (int(width/5), int(height/5)))
+        img[y1:y2, x1:x2] = face_img
+        
+def stamp_process2(faces, img, stamp, stamp_filename):
+    height, width, channels = img.shape
+    for face in faces:
+        x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
         x = (x2-x1)/2
         y = (y2-y1)/2
         if stamp_filename == "bittu.png":
@@ -78,49 +165,6 @@ def stamp_process(faces, img, stamp, stamp_filename):
         face_img = cv2.add(face_bg, face_fg)
         img[y1:y2, x1:x2] = face_img
 
-def mosaic_process2(faces, img):
-    for face in faces:
-        x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
-        face_img = img[y1:y2, x1:x2]
-        face_img = cv2.resize(face_img, (10, 10))
-        face_img = cv2.resize(face_img, (x2-x1, y2-y1), interpolation=cv2.INTER_NEAREST)
-        img[y1:y2, x1:x2] = face_img
-        
-def blur_process2(faces, img):
-    for face in faces:
-        x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
-        face_img = img[y1:y2, x1:x2]
-        face_img = cv2.blur(face_img, (30, 30))
-        img[y1:y2, x1:x2] = face_img
-        
-def stamp_process2(faces, img, stamp):
-    height, width, channels = img.shape
-    for face in faces:
-        x1, y1, x2, y2 = int(face[0]), int(face[1]), int(face[2]), int(face[3])
-        x = (x2-x1)/2
-        y = (y2-y1)/2
-        x1 -= int(x)
-        y1 -= int(y)
-        x2 += int(x)
-        y2 += int(y)
-        if x1 < 0:
-            x1 = 0
-        if y1 < 0:
-            y1 = 0
-        if x2 > width:
-            x1 = width
-        if y2 > height:
-            y2 = height
-        face_img = img[y1:y2, x1:x2]
-        stamp_resized = cv2.resize(stamp, (x2-x1, y2-y1))
-        stamp_mask = stamp_resized[:, :, 3]
-        stamp_mask_inv = cv2.bitwise_not(stamp_mask)
-        stamp_resized = stamp_resized[:, :, :3]
-        face_bg = cv2.bitwise_and(face_img, face_img, mask=stamp_mask_inv)
-        face_fg = cv2.bitwise_and(stamp_resized, stamp_resized, mask=stamp_mask)
-        face_img = cv2.add(face_bg, face_fg)
-        img[y1:y2, x1:x2] = face_img
-
 # 手動でモザイクなどの処理した部分を元に戻す関数を追加
 def restore_process2(faces, img, original):
     for face in faces:
@@ -129,6 +173,81 @@ def restore_process2(faces, img, original):
         face_img = original[y1:y2, x1:x2]
         # 加工後の画像に上書きする
         img[y1:y2, x1:x2] = face_img
+        
+from ultralytics import YOLO
+model = YOLO(model="yolov8x-pose-p6.pt")
+def yo(filename, model):
+    #model = YOLO(model="yolov8x-pose-p6.pt")
+    results = model.predict(source='testapp/static/up/' + filename)
+    result = results[0]
+    keypoint1 = result.keypoints
+    bodys = []
+    for box in keypoint1.xy:
+        body = []
+        nose_x, nose_y = map(int, box[0])
+        if nose_x + nose_y == 0:
+            continue
+        left_ey_x, left_ey_y = map(int, box[3])
+        right_ey_x, right_ey_y = map(int, box[4])
+        left_me_x, left_me_y = map(int, box[1])
+        right_me_x, right_me_y = map(int, box[2])
+        x1 = nose_x-100
+        y1 = nose_y-100
+        x2 = nose_x+100
+        y2 = nose_y+100
+        x2sa = 0
+        x1sa = 0
+        if left_ey_x + left_ey_y + right_ey_x + right_ey_y + left_me_x + left_me_y + right_me_x + right_me_y == 0:
+            continue
+        if left_ey_x + left_ey_y != 0:
+            x2sa = left_ey_x - nose_x
+            if x2sa < 0:
+                x2sa *= -1
+            # print(int(x2sa*1.01))
+            # x2 = x2 + int(x2sa*1.01)
+            # y1 = y1 - int(x2sa*1.01)
+            # y2 = y2 + int(x2sa*1.01)
+            x2 = nose_x + x2sa
+            # y1 = nose_y - x2sa
+            # y2 = nose_y + x2sa
+        elif left_me_x + left_me_y != 0:
+            x2sa = left_me_x - nose_x
+            x2sa = int(x2sa*1.5)
+            if x2sa < 0:
+                x2sa *= -1
+            x2 = nose_x + x2sa
+        if right_ey_x + right_ey_y != 0:
+            x1sa = nose_x - right_ey_x
+            if x1sa < 0:
+                x1sa *= -1
+            # print(int(x1sa*1.01))
+            # x1 = x1 - int(x1sa*1.01)
+            # y1 = y1 - int(x1sa*1.01)
+            # y2 = y2 + int(x1sa*1.01)
+            x1 = nose_x - x1sa
+            # y1 = nose_y - x1sa
+            # y2 = nose_y + x1sa
+        elif right_me_x + right_me_y != 0:
+            x1sa = nose_x - right_me_x
+            x1sa = int(x1sa*1.5)
+            if x1sa < 0:
+                x1sa *= -1
+            x1 = nose_x - x1sa
+        yy = max(x2sa, x1sa)
+        y1 = nose_y - yy
+        y2 = nose_y + yy
+        #print(x, y)
+        # #y2 = y1 + (y2-y1)*(1/4) 
+        # y2 = y1 + (y2-y1)*(1/2) 
+        # #x1 = x1 + (x2-x1)*(1/6) 
+        # #x2 = x1 + (x2-x1)*(5/6)
+        # print(x1,y1,x2,y2)
+        body.append(x1)
+        body.append(y1)
+        body.append(x2)
+        body.append(y2)
+        bodys.append(body)
+    return bodys
 
 @app.route('/')
 def index():
@@ -149,8 +268,8 @@ def index():
             # 現在の日時との差分を計算
             diff = now - mtime
             # 差分が1時間以上なら画像ファイルを削除
-            #if diff > datetime.timedelta(hours=1):
-            if diff > datetime.timedelta(seconds=30):
+            if diff > datetime.timedelta(hours=1):
+            #if diff > datetime.timedelta(seconds=30):
                 os.remove(filepath)
     return render_template('htmls/index.html', default_stamps=default_stamps)
 
@@ -164,14 +283,24 @@ def upload():
     img = cv2.imread('testapp/static/up/' + filename)
     option = request.form.get('option')
     type = request.form.get('type')
+    library = request.form.get('library') # フォームから処理ライブラリの値を取得する
     if type == 'auto':
-        faces = detector(img) # 自動処理の場合
+        if library == 'dlib': # dlibの場合
+            faces = detector(img) # dlibで顔の検出を行う
+        elif library == 'yolov8': # yolov8の場合
+            faces = yo(filename, model) # yolov8で顔の検出を行う
     elif type == 'manual':
         return redirect(url_for('manual', filename=filename, option=option)) # 手動処理の場合は別の画面に遷移
     if option == 'mosaic':
-        mosaic_process(faces, img)
+        if library == 'dlib': # dlibの場合
+            mosaic_process(faces, img) # dlib用のモザイク処理を行う
+        elif library == 'yolov8': # yolov8の場合
+            mosaic_process2(faces, img) # yolov8用のモザイク処理を行う
     elif option == 'blur':
-        blur_process(faces, img)
+        if library == 'dlib': # dlibの場合
+            blur_process(faces, img) # dlib用のぼかし処理を行う
+        elif library == 'yolov8': # yolov8の場合
+            blur_process2(faces, img) # yolov8用のぼかし処理を行う
     elif option == 'stamp':
         # フォームからスタンプの画像を取得する
         stamp_file = request.files['stamp']
@@ -191,7 +320,10 @@ def upload():
                 stamp = cv2.imread('testapp/static/default_stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
         else:
             return 'スタンプ用の画像がありません'
-        stamp_process(faces, img, stamp, stamp_filename)
+        if library == 'dlib': # dlibの場合
+            stamp_process(faces, img, stamp, stamp_filename) # dlib用のスタンプ処理を行う
+        elif library == 'yolov8': # yolov8の場合
+            stamp_process2(faces, img, stamp, stamp_filename) # yolov8用のスタンプ処理を行う
     # elif option == 'stamp':
     #     stamp_file = request.files['stamp']
     #     if not stamp_file:
@@ -215,7 +347,6 @@ def manual():
     # 手動処理画面に遷移する
     filename = request.args.get('filename')
     option = request.args.get('option')
-    print(filename)
     return render_template('htmls/manual.html', filename=filename, option=option)
 
 @app.route('/process', methods=['POST'])

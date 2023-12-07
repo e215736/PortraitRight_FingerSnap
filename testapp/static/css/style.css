@@ -56,7 +56,7 @@ p {
     border-radius: 3px;
     transition: all .2s;
     font-size: 19pt;
-    font-family:"Hiragino Maru Gothic Pro W4"
+    font-family:"Hiragino Maru Gothic Pro W4";
 }
   
 .radio-inline__input:checked + .radio-inline__label {
@@ -92,4 +92,36 @@ p {
 .default_stamp {
     height: 100px;
     width: auto;
+}
+
+/* 吹き出しの共通スタイルを定義 */
+.balloon {
+    display: none;
+    width: auto;
+    height: auto;
+    background-color: #ffea94;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;/* よくわからんけど矢印に関係する */
+    margin: 15px 0 0 0px; /* 上、右、下、左のマージンをこの順番で指定 */
+    font-size     : 15pt;
+    color: black;
+}
+
+/* 吹き出しの矢印部分のスタイルを定義 */
+.balloon:before {
+    content: "";
+    position: absolute;
+    top: -30px; /* 矢印の位置を吹き出しの上に設定 */
+    left: 50%; /* 矢印の位置を吹き出しの左端から20%の位置に設定 */
+    margin-left: -15px;
+    border: 15px solid transparent;
+    border-bottom: 15px solid #ffea94; /* 下向きの矢印を作成 */
+}
+
+/* ラジオボタンと吹き出しを含むコンテナのスタイルを定義 */
+.option-container {
+    position: relative; /* 子要素の絶対位置の基準点となる */
+    display: inline-block; /* 横並びに配置 */
+    vertical-align: top; /* 同じ行の要素と上端を揃える */
 }

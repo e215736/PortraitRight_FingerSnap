@@ -63,14 +63,40 @@
     <br>
     <!-- ラジオボタンで自動処理と手動処理を選択する -->
     <h1>❸自動処理と手動処理を選択してください</h1>
-    <input id="auto" class="radio-inline__input" type="radio" name="type" value="auto" checked="checked"/>
-    <label class="radio-inline__label" for="auto">
-        自動処理
-    </label>
-    <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
-    <label class="radio-inline__label" for="manual">
-        手動処理(スタンプ・スマホ未対応)
-    </label>
+    <div class="option-container">
+        <input id="auto" class="radio-inline__input" type="radio" name="type" value="auto" checked="checked"/>
+        <label class="radio-inline__label" for="auto">
+            自動処理
+            <div id="balloonA" class="balloon">AIが自動で処理をします</div>
+        </label>
+    </div>
+    <div class="option-container">
+        <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
+        <label class="radio-inline__label" for="manual">
+            手動処理(スタンプ未対応)
+            <div id="balloonB" class="balloon">自分で処理したいところを選択できます</div>
+        </label>
+    </div>
+    <br>
+    <br>
+    <div id="library_form" style="display: show;">
+        <!-- ラジオボタンでdlibとyolov8を切り替える -->
+        <h1>❹自動処理の処理ライブラリを選択してください</h1>
+        <div class="option-container">
+            <input id="dlib" class="radio-inline__input" type="radio" name="library" value="dlib" checked="checked"/>
+            <label class="radio-inline__label" for="dlib">
+                速度早め
+                <div id="balloonC" class="balloon">はっきりした顔画像向けです</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="yolov8" class="radio-inline__input" type="radio" name="library" value="yolov8"/>
+            <label class="radio-inline__label" for="yolov8">
+                精度高め
+                <div id="balloonD" class="balloon" style="display: none;">横顔くらいなら対応できます</div>
+            </label>
+        </div>
+    </div>
     <br>
     <br>
     <input type="submit" value="加工する！" class="button">

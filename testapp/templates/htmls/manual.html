@@ -10,7 +10,12 @@
     </div>
 </div>
 <p><h2>手動で画像の顔を隠します！</h2></p>
+<img src="{{ url_for('static', filename='images/guide.gif') }}" width="350">
+<div class="text-container">
+    <h5>使い方のイメ〜ジ</h5>
 </div>
+</div>
+<br>
 <!-- 手動処理画面で処理したい画像を表示 -->
 <img src="{{ url_for('static', filename='up/' + filename) }}" alt="original" id="original">
 
