@@ -94,6 +94,12 @@ p {
     width: auto;
 }
 
+.default_stamp:hover {
+    height: 100px;
+    width: auto;
+    background    : #FFEE88;     /* 背景色     */
+}
+
 /* 吹き出しの共通スタイルを定義 */
 .balloon {
     display: none;
@@ -124,4 +130,25 @@ p {
     position: relative; /* 子要素の絶対位置の基準点となる */
     display: inline-block; /* 横並びに配置 */
     vertical-align: top; /* 同じ行の要素と上端を揃える */
+}
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    color         : #000000;     /* 文字色     */
+    background    : #ddd;     /* 背景色     */
+    transition: background-color 0.3s; /* 色変更のアニメーションを滑らかに */
+    margin-right: 10px; /* 画像の選択と選択されていませんの間のスペース */
+}
+  
+.custom-file-upload:hover {
+    color         : #FFFFFF;     /* 文字色     */
+    background-color: #FFCC00; /* カーソルが上にある時の背景色 */
+}
+
+.filename-display {
+    display: inline-block;
+    vertical-align: center; /* テキストを上揃えにする */
 }
