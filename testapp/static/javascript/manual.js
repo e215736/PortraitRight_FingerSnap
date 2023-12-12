@@ -170,3 +170,9 @@ default_stamps.forEach(function(ds) {
     stamp.required = false;
 });
 }); 
+
+document.getElementById('backButton').addEventListener('click', function() {
+    var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
+    // ページをリダイレクト
+    window.location.href = returnHTML;
+  });

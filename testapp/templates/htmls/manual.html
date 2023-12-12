@@ -1,19 +1,20 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container"><div class="flex">
-    <div class="image-container">
-        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170">
+<div class="container">
+    <div class="flex">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+        </div>
+        <div class="text-container">
+            <h2>肖像権指パッチン</h2>
+        </div>
     </div>
+    <p><h2>手動で画像の顔を隠します！</h2></p>
+    <img src="{{ url_for('static', filename='images/guide.gif') }}" width="350">
     <div class="text-container">
-        <h2>肖像権指パッチン</h2>
+        <h5>使い方のイメ〜ジ</h5>
     </div>
-</div>
-<p><h2>手動で画像の顔を隠します！</h2></p>
-<img src="{{ url_for('static', filename='images/guide.gif') }}" width="350">
-<div class="text-container">
-    <h5>使い方のイメ〜ジ</h5>
-</div>
 </div>
 <br>
 <!-- 手動処理画面で処理したい画像を表示 -->
@@ -24,24 +25,10 @@
     <!-- 隠しフィールドでファイル名とオプションを送信 -->
     <input type="hidden" name="filename" value="{{ filename }}">
     <input type="hidden" name="option" value="{{ option }}">
+    <input type="hidden" name="stamp" value="{{ stamp }}">
+    <input type="hidden" name="stamp_type" value="{{ stamp_type }}">
     <!-- 隠しフィールドで範囲の座標のリストを送信 -->
     <input type="hidden" name="faces" id="faces">
-    <!-- スタンプ用の画像を選択するフォームを追加する -->
-    <div id="stamp_form" style="display: none;">
-        <br>
-        <h3>スタンプ用の画像ファイルを選択してください</h3>
-        <input type="file" name="stamp">
-        <br>
-        <h3>または、デフォルトのスタンプをクリックしてください</h3>
-        <!-- デフォルトのスタンプを画像として表示する -->
-        <div id="default_stamps">
-            {% for stamp in default_stamps %}
-            <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
-            {% endfor %}
-        </div>
-        <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
-        <input type="hidden" name="default_stamp" id="default_stamp">
-    </div>
     <br>
     <br>
     <input type="submit" value="加工する！" class="button">

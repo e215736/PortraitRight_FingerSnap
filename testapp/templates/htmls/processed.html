@@ -3,10 +3,10 @@
 {% block content %}
 <div class="container"><div class="flex">
     <div class="image-container">
-        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170">
+        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
     </div>
     <div class="text-container">
-        <h2>肖像権指パッチン</h2>
+        <h3>肖像権指パッチン</h3>
     </div>
 </div>
 <p><h2>画像の加工が完了しました</h2></p>
@@ -23,7 +23,14 @@
     <form action="/restore" method="get">
         <!-- 隠しフィールドでファイル名とオプションを送信 -->
         <input type="hidden" name="filename" value="{{ original }}">
-        <input type="submit" value="処理した部分の一部を元に戻したい(スマホ未対応)" class="button">
+	<button type="submit" class="button">処理した部分の一部を元に戻したい(スマホ未対応)</button>
+    </form>
+    <!-- 手動でモザイクなどの処理した部分を元に戻すボタンを追加 -->
+    <form action="/more_manual" method="get">
+        <!-- 隠しフィールドでファイル名とオプションを送信 -->
+        <input type="hidden" name="filename" value="{{ original }}">
+        <input type="hidden" name="option" value="{{ option }}">
+	<button type="submit" class="button">も〜っと手動で加工したい</button>
     </form>
     <form action="/" method="get">
         <a href="/" class="button">新しく画像を加工する</a>

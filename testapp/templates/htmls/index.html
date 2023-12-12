@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container"><div class="flex">
     <div class="image-container">
-        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170">
+        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
     </div>
     <div class="text-container">
         <h2>肖像権指パッチン</h2>
@@ -20,8 +20,13 @@
 
 <!-- ファイル選択とアップロードのフォーム -->
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept="image/*" required>
-    <br>
+    <label class="custom-file-upload">
+        <input type="file" name="file" accept="image/*" required style="display:none"
+               onchange="document.getElementById('filename').textContent = this.files[0].name">
+        アップロードする画像を選ぶ
+    </label>
+    <div id="filename" class="filename-display">選択されていません</div>
+    <!-- <input type="file" name="file" accept="image/*" required> -->
     <br>
     <!-- ラジオボタンで処理を選択 -->
 
@@ -47,7 +52,13 @@
     <div id="stamp_form" style="display: none;">
         <br>
         <h3>スタンプ用の画像ファイルを選択してください</h3>
-        <input type="file" name="stamp">
+        <!-- <input type="file" name="stamp"> -->
+        <label class="custom-file-upload">
+            <input type="file" name="stamp" accept="image/*" style="display:none"
+                   onchange="document.getElementById('filename2').textContent = this.files[0].name">
+            スタンプに使いたい画像がある方!押して
+        </label>
+        <div id="filename2" class="filename-display">選択されていません</div>
         <br>
         <h3>または、デフォルトのスタンプをクリックしてください</h3>
         <!-- デフォルトのスタンプを画像として表示する -->
@@ -59,7 +70,6 @@
         <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
         <input type="hidden" name="default_stamp" id="default_stamp">
     </div>
-    <br>
     <br>
     <!-- ラジオボタンで自動処理と手動処理を選択する -->
     <h1>❸自動処理と手動処理を選択してください</h1>
@@ -73,7 +83,7 @@
     <div class="option-container">
         <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
         <label class="radio-inline__label" for="manual">
-            手動処理(スタンプ未対応)
+            手動処理(スマホ未対応)
             <div id="balloonB" class="balloon">自分で処理したいところを選択できます</div>
         </label>
     </div>
@@ -86,14 +96,14 @@
             <input id="dlib" class="radio-inline__input" type="radio" name="library" value="dlib" checked="checked"/>
             <label class="radio-inline__label" for="dlib">
                 速度早め
-                <div id="balloonC" class="balloon">はっきりした顔画像向けです</div>
+                <div id="balloonC" class="balloon">早いけど加工漏れがあるかも！？</div>
             </label>
         </div>
         <div class="option-container">
             <input id="yolov8" class="radio-inline__input" type="radio" name="library" value="yolov8"/>
             <label class="radio-inline__label" for="yolov8">
                 精度高め
-                <div id="balloonD" class="balloon" style="display: none;">横顔くらいなら対応できます</div>
+                <div id="balloonD" class="balloon" style="display: none;">遅いけど精度が高いよす</div>
             </label>
         </div>
     </div>

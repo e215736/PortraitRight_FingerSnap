@@ -94,3 +94,9 @@ canvas.addEventListener("mousemove", drag);
 canvas.addEventListener("mousedown", startDrag);
 canvas.addEventListener("mouseup", endDrag);
 canvas.addEventListener("mouseout", endDrag);
+
+document.getElementById('backButton').addEventListener('click', function() {
+    var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
+    // ページをリダイレクト
+    window.location.href = returnHTML;
+  });

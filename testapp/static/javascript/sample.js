@@ -17,11 +17,7 @@ function checkOption() {
   var library = document.querySelector("input[name='library']:checked").value;
 
   if (option == "stamp") {
-    if (type != "manual") {
-      showStampForm(); // スタンプ用の画像を選択するフォームを表示する
-    } else {
-      hideStampForm();
-    }
+    showStampForm(); // スタンプ用の画像を選択するフォームを表示する
   } else {
     hideStampForm();
   }
@@ -49,7 +45,7 @@ function checkOption() {
     document.getElementById("balloonB").style.display = "block";
     //balloonAを表示させない
     document.getElementById("balloonA").style.display = "none";
-    hideStampForm(); // スタンプ用の画像を選択するフォームを非表示にする
+    //hideStampForm(); // スタンプ用の画像を選択するフォームを非表示にする
     //library_formを表示させない
     document.getElementById("library_form").style.display = "none";
   }
@@ -136,3 +132,9 @@ ds.addEventListener("click", function() {
   stamp.required = false;
 });
 });
+
+document.getElementById('backButton').addEventListener('click', function() {
+    var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
+    // ページをリダイレクト
+    window.location.href = returnHTML;
+  });
