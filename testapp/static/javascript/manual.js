@@ -1,26 +1,13 @@
 // 手動処理画面で処理したい画像の部分を範囲選択するための変数と関数
 
 // 画像の要素を取得する
-var original = document.getElementById("original");
-// 画像のサイズを取得する
-var width = original.width;
-var height = original.height;
+var original = document.getElementById("filename");
 // 画像の上に重ねるキャンバスを作成する
 var canvas = document.createElement("canvas");
-canvas.width = width;
-canvas.height = height;
 // キャンバスのコンテキストを取得する
 var ctx = canvas.getContext("2d");
 // キャンバスを画像の下に挿入する
 original.parentNode.insertBefore(canvas, original.nextSibling);
-// キャンバスのスタイルを設定する
-canvas.style.position = "absolute";
-canvas.style.top = original.offsetTop + "px";
-canvas.style.left = original.offsetLeft + "px";
-canvas.style.cursor = "crosshair";
-// キャンバスに描画する色と線の太さを設定する
-ctx.strokeStyle = "red";
-ctx.lineWidth = 5;
 // マウスの座標を保存する変数
 var mouseX = 0;
 var mouseY = 0;
@@ -31,6 +18,23 @@ var startY = 0;
 var isDragging = false;
 // 選択した範囲の座標を保存する配列
 var faces = [];
+// 画像のサイズを保存する変数
+var width, height;
+
+// ページが読み込まれたときに画像のサイズを取得し、キャンバスの位置とサイズを設定する
+window.onload = function () {
+    // 画像のサイズを取得する（naturalWidthやnaturalHeightを使う）
+    width = original.naturalWidth;
+    height = original.naturalHeight;
+    // キャンバスのサイズを設定する
+    canvas.width = width;
+    canvas.height = height;
+    // キャンバスのスタイルを設定する（positionやtopやleftを画像と一致させる）
+    canvas.style.position = "absolute";
+    canvas.style.top = original.offsetTop + "px";
+    canvas.style.left = original.offsetLeft + "px";
+    canvas.style.cursor = "crosshair";
+};
 
 // キャンバスにマウスが乗ったときにマウスの座標を更新する関数
 function updateMousePosition(e) {
@@ -59,6 +63,9 @@ function drag(e) {
     updateMousePosition(e);
     // キャンバスをクリアする
     ctx.clearRect(0, 0, width, height);
+    // キャンバスに描画する色と線の太さを設定する
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 5;
     // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
     var w = mouseX - startX;
     var h = mouseY - startY;
@@ -95,84 +102,40 @@ canvas.addEventListener("mousedown", startDrag);
 canvas.addEventListener("mouseup", endDrag);
 canvas.addEventListener("mouseout", endDrag);
 
-// ラジオボタンの値に応じてスタンプ用の画像を選択するフォームを表示または非表示にする関数
-function checkOption() {
-    var option = document.querySelector("input[name='option']:checked").value;
-    if (option == "stamp") {
-        showStampForm();
-    } else {
-        hideStampForm();
-    }
-}
-  
-// ページが読み込まれたときにラジオボタンの値をチェックする
-window.onload = function () {
-    checkOption();
-};
-  
-// ラジオボタンが変更されたときにラジオボタンの値をチェックする
-var radios = document.querySelectorAll("input[name='option']");
-for (var i = 0; i < radios.length; i++) {
-    radios[i].addEventListener("change", checkOption);
-}
-
-// デフォルトのスタンプの画像をクリックしたときに選択されたことを示す関数
-function selectStamp(e) {
-    // クリックした画像の要素を取得する
-    var target = e.target;
-    // 画像のファイル名を取得する
-    var stamp_name = target.alt;
-    // 隠しフィールドにファイル名をセットする
-    var default_stamp = document.getElementById("default_stamp");
-    default_stamp.value = stamp_name;
-    // すべてのデフォルトのスタンプの画像の枠線を消す
-    var stamps = document.getElementsByClassName("default_stamp");
-    for (var i = 0; i < stamps.length; i++) {
-        stamps[i].style.border = "none";
-    }
-    // クリックした画像の枠線を赤くする
-    target.style.border = "5px solid red";
-}
-
-// デフォルトのスタンプの画像にクリックイベントを追加する
-var stamps = document.getElementsByClassName("default_stamp");
-for (var i = 0; i < stamps.length; i++) {
-    stamps[i].addEventListener("click", selectStamp);
-}
-
-// スタンプの要素を取得する
-var stamp = document.querySelector("input[name=stamp]");
-// ラジオボタンの要素を取得する
-var radio = document.querySelectorAll("input[name=option]");
-// ラジオボタンの変更イベントにリスナーを登録する
-radio.forEach(function(r) {
-  r.addEventListener("change", function() {
-    // スタンプが選択された場合はrequired属性を付ける
-    if (r.value == "stamp") {
-      stamp.required = true;
-    } else {
-      // それ以外の場合はrequired属性を外す
-      stamp.required = false;
-    }
-  });
-});
-
-// デフォルトスタンプの画像要素を取得する
-var default_stamps = document.querySelectorAll(".default_stamp");
-// デフォルトスタンプのクリックイベントにリスナーを登録する
-default_stamps.forEach(function(ds) {
-  ds.addEventListener("click", function() {
-    // クリックされたデフォルトスタンプのファイル名を取得する
-    var stamp_name = ds.alt;
-    // 隠しフィールドにファイル名をセットする
-    default_stamps.value = stamp_name;
-    // スタンプのrequired属性を外す
-    stamp.required = false;
-});
-}); 
-
 document.getElementById('backButton').addEventListener('click', function() {
     var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
     // ページをリダイレクト
     window.location.href = returnHTML;
-  });
+});
+
+// ドラッグ操作中に画面の端にマウスがきた場合にその方向に画面をスクロールする関数
+function scrollOnDrag(e) {
+    // ドラッグ中でなければ何もしない
+    if (!isDragging) return;
+    // マウスの座標を更新する
+    updateMousePosition(e);
+    // マウスが画面の端にあるかどうかを判定する
+    var edgeOffsetX = window.innerWidth*0.1; // マウスが画面の端からどれだけ離れているとスクロールするか
+    var edgeOffsetY = window.innerHeight*0.1; // マウスが画面の端からどれだけ離れているとスクロールするか
+    var isNearRightEdge = window.innerWidth - e.clientX < edgeOffsetX;
+    var isNearLeftEdge = e.clientX < edgeOffsetX;
+    var isNearTopEdge = e.clientY < edgeOffsetY;
+    var isNearBottomEdge = window.innerHeight - e.clientY < edgeOffsetY;
+    // スクロールの速度を設定する
+    var scrollSpeedX = window.innerWidth*0.1;
+    var scrollSpeedY = window.innerHeight*0.1;
+    // マウスが画面の端にある場合にその方向にスクロールする
+    if (isNearRightEdge) {
+        window.scrollBy(scrollSpeedX, 0);
+    } else if (isNearLeftEdge) {
+        window.scrollBy(-scrollSpeedX, 0);
+    }
+    if (isNearBottomEdge) {
+        window.scrollBy(0, scrollSpeedY);
+    } else if (isNearTopEdge) {
+        window.scrollBy(0, -scrollSpeedY);
+    }
+}
+
+// マウス移動イベントにスクロール関数を追加する
+window.addEventListener("mousemove", scrollOnDrag);

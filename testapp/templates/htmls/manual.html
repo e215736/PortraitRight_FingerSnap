@@ -18,11 +18,12 @@
 </div>
 <br>
 <!-- 手動処理画面で処理したい画像を表示 -->
-<img src="{{ url_for('static', filename='up/' + filename) }}" alt="original" id="original">
+<img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" id="filename">
 
 <!-- フォームで処理のオプションと範囲の座標を送信 -->
 <form action="/process" method="post" enctype="multipart/form-data">
     <!-- 隠しフィールドでファイル名とオプションを送信 -->
+    <input type="hidden" name="original" value="{{ original }}">
     <input type="hidden" name="filename" value="{{ filename }}">
     <input type="hidden" name="option" value="{{ option }}">
     <input type="hidden" name="stamp" value="{{ stamp }}">
