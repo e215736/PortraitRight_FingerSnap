@@ -6,47 +6,107 @@
         <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
     </div>
     <div class="text-container">
-        <h3>肖像権指パッチン</h3>
+        <h2>肖像権指パッチン</h2>
     </div>
 </div>
-<p><h2>手動で画像の顔を隠します！</h2></p>
-<img src="{{ url_for('static', filename='images/guide.gif') }}" width="350">
+
 <div class="text-container">
-    <h5>使い方のイメ〜ジ(うまくいかない時はリロードしてね)</h5>
-</div>
+<p ><h2>画像の加工をさらに行います！</h2></p>
 </div>
 <br>
-<!-- 手動処理画面で処理したい画像を表示 -->
-<img src="{{ url_for('static', filename='down/processed_' + filename) }}" alt="processed" id="processed">
 
-<!-- フォームで処理のオプションと範囲の座標を送信 -->
+<h1>❶加工する画像を確認してください</h1>
 <form action="/more_manual_process" method="post" enctype="multipart/form-data">
+
+    <!-- 処理後の画像を表示 -->
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" width="50%">
+    </div>      
     <!-- 隠しフィールドでファイル名とオプションを送信 -->
+    <input type="hidden" name="original" value="{{ original }}">
     <input type="hidden" name="filename" value="{{ filename }}">
-    <input type="hidden" name="option" value="{{ option }}">
-    <!-- 隠しフィールドで範囲の座標のリストを送信 -->
-    <input type="hidden" name="faces" id="faces">
-    <!-- スタンプ用の画像を選択するフォームを追加する -->
+
+    <br>
+
+    <br><h1>❷適用する処理を選択してください</h1>
+    
+    <input id="item-1" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
+
+    <label class="radio-inline__label" for="item-1">
+        モザイク
+    </label>
+    <input id="item-2" class="radio-inline__input" type="radio" name="option" value="blur"/>
+    <label class="radio-inline__label" for="item-2">
+        ぼかし
+    </label>
+    <input id="stamp" class="radio-inline__input" type="radio" name="option" value="stamp"/>
+    <label class="radio-inline__label" for="stamp">
+        スタンプ
+    </label>
+
+    <br>
+
     <div id="stamp_form" style="display: none;">
         <br>
-        <h3>スタンプ用の画像ファイルを選択してください</h3>
-        <input type="file" name="stamp">
+        <h3>スタンプ用の画像ファイル</h3>
+        <label class="custom-file-upload">
+            <input type="file" name="stamp" accept="image/*" style="display:none"
+                   onchange="document.getElementById('filename2').textContent = this.files[0].name">
+            スタンプに使いたい画像がある方!押して
+        </label>
+        <div id="filename2" class="filename-display">選択されてない</div>
         <br>
-        <h3>または、デフォルトのスタンプをクリックしてください</h3>
+        <h3>または、デフォルトのスタンプをクリック</h3>
         <!-- デフォルトのスタンプを画像として表示する -->
         <div id="default_stamps">
             {% for stamp in default_stamps %}
             <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
             {% endfor %}
         </div>
-        <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
         <input type="hidden" name="default_stamp" id="default_stamp">
+    </div>
+    <br>
+
+    <h1>❸自動処理と手動処理を選択してください</h1>
+    <div class="option-container">
+        <input id="auto" class="radio-inline__input" type="radio" name="type" value="auto" checked="checked"/>
+        <label class="radio-inline__label" for="auto">
+            自動処理
+            <div id="balloonA" class="balloon">AIが自動で処理をします</div>
+        </label>
+    </div>
+    <div class="option-container">
+        <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
+        <label class="radio-inline__label" for="manual">
+            手動処理(スマホ未対応)
+            <div id="balloonB" class="balloon">自分で処理したいところを選択できます</div>
+        </label>
+    </div>
+    <br>
+    <br>
+    <div id="library_form" style="display: show;">
+        <!-- ラジオボタンでdlibとyolov8を切り替える -->
+        <h1>❹自動処理の処理モードを選択してください</h1>
+        <div class="option-container">
+            <input id="dlib" class="radio-inline__input" type="radio" name="library" value="dlib" checked="checked"/>
+            <label class="radio-inline__label" for="dlib">
+                速度早め
+                <div id="balloonC" class="balloon">早いけど加工漏れがあるかも！？</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="yolov8" class="radio-inline__input" type="radio" name="library" value="yolov8"/>
+            <label class="radio-inline__label" for="yolov8">
+                精度高め
+                <div id="balloonD" class="balloon" style="display: none;">遅いけど精度が高いよ</div>
+            </label>
+        </div>
     </div>
     <br>
     <br>
     <input type="submit" value="加工する！" class="button">
 </form>
 <br>
-<script src="{{ url_for('static', filename='javascript/manual.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/more_manual.js') }}"></script>
 
 {% endblock %}

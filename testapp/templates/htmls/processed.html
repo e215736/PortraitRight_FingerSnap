@@ -13,8 +13,8 @@
 </div>
 <!-- 処理前の画像と処理後の画像を表示 -->
 <div class="flex">
-    <img src="{{ url_for('static', filename='up/' + original) }}" alt="original" width="50%">
-    <img src="{{ url_for('static', filename='down/' + processed) }}" alt="processed" width="50%">
+    <img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" width="50%">
+    <img src="{{ url_for('static', filename='files/' + processed) }}" alt="processed" width="50%">
 </div>
 
 <div class="button.btn "><div class="container">
@@ -22,24 +22,32 @@
     <!-- 手動でモザイクなどの処理した部分を元に戻すボタンを追加 -->
     <form action="/restore" method="get">
         <!-- 隠しフィールドでファイル名とオプションを送信 -->
-        <input type="hidden" name="filename" value="{{ original }}">
-	<button type="submit" class="button">処理した部分の一部を元に戻したい(スマホ未対応)</button>
+        <input type="hidden" name="original" value="{{ original }}">
+        <input type="hidden" name="processed" value="{{ processed }}">
+	    <button type="submit" class="button">処理した部分の一部を元に戻したい(スマホ未対応)</button>
     </form>
-    <!-- 手動でモザイクなどの処理した部分を元に戻すボタンを追加 -->
+    <!-- さらに加工するボタンを追加 -->
     <form action="/more_manual" method="get">
         <!-- 隠しフィールドでファイル名とオプションを送信 -->
-        <input type="hidden" name="filename" value="{{ original }}">
-        <input type="hidden" name="option" value="{{ option }}">
-	<button type="submit" class="button">も〜っと手動で加工したい</button>
+        <input type="hidden" name="original" value="{{ original }}">
+        <input type="hidden" name="processed" value="{{ processed }}">
+        <button type="submit" class="button">さらに加工する</button>
     </form>
     <form action="/" method="get">
         <a href="/" class="button">新しく画像を加工する</a>
         <!-- ダウンロードボタンを追加 -->
-        <a href="{{ url_for('static', filename='down/' + processed) }}" download="downloaded_{{ processed }}" class="button" role="button"><span>加工後の画像をダウンロードする</span></a>
+        <a href="{{ url_for('static', filename='files/' + processed) }}" download="downloaded_{{ processed }}" class="button" role="button"><span>加工後の画像をダウンロードする</span></a>
     </form>
 </div>
 </div>
 <br>
 
+<a href="https://docs.google.com/document/d/1OEpoBB9DtwWiP6YmjgQovh9EyFBZ-AH8vUmGbsJu34c/edit?usp=sharing">時間短めレビューの先はこちら</a>
+
+<div class="GoogleForm">
+    <iframe
+      src="https://forms.gle/obtcKXzo9Jvd2Rfw7"
+      width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
+</div>
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
 {% endblock %}

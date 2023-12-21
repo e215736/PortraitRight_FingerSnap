@@ -1,26 +1,13 @@
 // 手動でモザイクなどの処理した部分を元に戻す画面で処理したい画像の部分を範囲選択するための変数と関数
 
 // 画像の要素を取得する
-var processed = document.getElementById("processed");
-// 画像のサイズを取得する
-var width = processed.width;
-var height = processed.height;
+var processed = document.getElementById("filename");
 // 画像の上に重ねるキャンバスを作成する
 var canvas = document.createElement("canvas");
-canvas.width = width;
-canvas.height = height;
 // キャンバスのコンテキストを取得する
 var ctx = canvas.getContext("2d");
 // キャンバスを画像の下に挿入する
 processed.parentNode.insertBefore(canvas, processed.nextSibling);
-// キャンバスのスタイルを設定する
-canvas.style.position = "absolute";
-canvas.style.top = processed.offsetTop + "px";
-canvas.style.left = processed.offsetLeft + "px";
-canvas.style.cursor = "crosshair";
-// キャンバスに描画する色と線の太さを設定する
-ctx.strokeStyle = "blue";
-ctx.lineWidth = 5;
 // マウスの座標を保存する変数
 var mouseX = 0;
 var mouseY = 0;
@@ -31,6 +18,23 @@ var startY = 0;
 var isDragging = false;
 // 選択した範囲の座標を保存する配列
 var faces = [];
+// 画像のサイズを保存する変数
+var width, height;
+
+// ページが読み込まれたときに画像のサイズを取得し、キャンバスの位置とサイズを設定する
+window.onload = function () {
+    // 画像のサイズを取得する（naturalWidthやnaturalHeightを使う）
+    width = processed.naturalWidth;
+    height = processed.naturalHeight;
+    // キャンバスのサイズを設定する
+    canvas.width = width;
+    canvas.height = height;
+    // キャンバスのスタイルを設定する（positionやtopやleftを画像と一致させる）
+    canvas.style.position = "absolute";
+    canvas.style.top = processed.offsetTop + "px";
+    canvas.style.left = processed.offsetLeft + "px";
+    canvas.style.cursor = "crosshair";
+};
 
 // キャンバスにマウスが乗ったときにマウスの座標を更新する関数
 function updateMousePosition(e) {
@@ -59,6 +63,9 @@ function drag(e) {
     updateMousePosition(e);
     // キャンバスをクリアする
     ctx.clearRect(0, 0, width, height);
+    // キャンバスに描画する色と線の太さを設定する
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 5;
     // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
     var w = mouseX - startX;
     var h = mouseY - startY;
@@ -99,4 +106,36 @@ document.getElementById('backButton').addEventListener('click', function() {
     var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
     // ページをリダイレクト
     window.location.href = returnHTML;
-  });
+});
+
+// ドラッグ操作中に画面の端にマウスがきた場合にその方向に画面をスクロールする関数
+function scrollOnDrag(e) {
+    // ドラッグ中でなければ何もしない
+    if (!isDragging) return;
+    // マウスの座標を更新する
+    updateMousePosition(e);
+    // マウスが画面の端にあるかどうかを判定する
+    var edgeOffsetX = window.innerWidth*0.1; // マウスが画面の端からどれだけ離れているとスクロールするか
+    var edgeOffsetY = window.innerHeight*0.1; // マウスが画面の端からどれだけ離れているとスクロールするか
+    var isNearRightEdge = window.innerWidth - e.clientX < edgeOffsetX;
+    var isNearLeftEdge = e.clientX < edgeOffsetX;
+    var isNearTopEdge = e.clientY < edgeOffsetY;
+    var isNearBottomEdge = window.innerHeight - e.clientY < edgeOffsetY;
+    // スクロールの速度を設定する
+    var scrollSpeedX = window.innerWidth*0.1;
+    var scrollSpeedY = window.innerHeight*0.1;
+    // マウスが画面の端にある場合にその方向にスクロールする
+    if (isNearRightEdge) {
+        window.scrollBy(scrollSpeedX, 0);
+    } else if (isNearLeftEdge) {
+        window.scrollBy(-scrollSpeedX, 0);
+    }
+    if (isNearBottomEdge) {
+        window.scrollBy(0, scrollSpeedY);
+    } else if (isNearTopEdge) {
+        window.scrollBy(0, -scrollSpeedY);
+    }
+}
+
+// マウス移動イベントにスクロール関数を追加する
+window.addEventListener("mousemove", scrollOnDrag);

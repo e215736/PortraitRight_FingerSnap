@@ -17,10 +17,12 @@
 </div>
 <br>
 <!-- 処理後の画像を表示 -->
-<img src="{{ url_for('static', filename='down/processed_' + filename) }}" alt="processed" id="processed">
+<img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" id="filename">
 
 <!-- フォームで処理のオプションと範囲の座標を送信 -->
 <form action="/restore_process" method="post" enctype="multipart/form-data">
+    <!-- 隠しフィールドでファイル名とオプションを送信 -->
+    <input type="hidden" name="original" value="{{ original }}">
     <!-- 隠しフィールドでファイル名とオプションを送信 -->
     <input type="hidden" name="filename" value="{{ filename }}">
     <!-- 隠しフィールドで範囲の座標のリストを送信 -->
