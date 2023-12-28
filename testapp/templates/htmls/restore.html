@@ -29,7 +29,10 @@
     <input type="hidden" name="faces" id="faces">
     <br>
     <br>
-    <input type="submit" value="加工する！" class="button">
+    <button type="submit" class="button">
+        <img src="{{ url_for('static', filename='images/SVGs/eraser-fill.svg') }}" alt="restore" class="svg-icon" style="width: 1em; height: 1em;">
+        加工を消す！
+    </button>
 </form>
 <br>
 <script src="{{ url_for('static', filename='javascript/restore.js') }}"></script>

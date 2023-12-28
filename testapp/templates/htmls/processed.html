@@ -24,20 +24,29 @@
         <!-- 隠しフィールドでファイル名とオプションを送信 -->
         <input type="hidden" name="original" value="{{ original }}">
         <input type="hidden" name="processed" value="{{ processed }}">
-	    <button type="submit" class="button">処理した部分の一部を元に戻したい(スマホ未対応)</button>
+        <button type="submit" class="button">
+            <img src="{{ url_for('static', filename='images/SVGs/eraser-fill.svg') }}" alt="restore" class="svg-icon" style="width: 1em; height: 1em;">
+            加工を消す！
+        </button>
     </form>
     <!-- さらに加工するボタンを追加 -->
     <form action="/more_manual" method="get">
         <!-- 隠しフィールドでファイル名とオプションを送信 -->
         <input type="hidden" name="original" value="{{ original }}">
         <input type="hidden" name="processed" value="{{ processed }}">
-        <button type="submit" class="button">さらに加工する</button>
+        <button type="submit" class="button">
+            <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
+            さらに加工する！
+        </button>
+        
     </form>
     <form action="/" method="get">
-        <a href="/" class="button">新しく画像を加工する</a>
-        <!-- ダウンロードボタンを追加 -->
-        <a href="{{ url_for('static', filename='files/' + processed) }}" download="downloaded_{{ processed }}" class="button" role="button"><span>加工後の画像をダウンロードする</span></a>
+        <a href="{{ url_for('static', filename='files/' + processed) }}" download="downloaded_{{ processed }}" class="button" role="button">
+            <img src="{{ url_for('static', filename='images/SVGs/download.svg') }}" alt="Download Processed Image" class="svg-icon" style="width: 1em; height: 1em; "> 
+            ダウンロード
+        </a>
     </form>
+
 </div>
 </div>
 <br>
