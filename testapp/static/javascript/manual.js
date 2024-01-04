@@ -139,3 +139,125 @@ function scrollOnDrag(e) {
 
 // マウス移動イベントにスクロール関数を追加する
 window.addEventListener("mousemove", scrollOnDrag);
+
+
+// モード切替ボタンの要素を取得する
+var modeButton = document.getElementById("modeButton");
+// 現在のモードを保存する変数（初期値は範囲選択モード）
+var mode = "selection";
+
+// モード切替ボタンがクリックされたときにモードを切り替える関数
+function switchMode() {
+    if (mode === "selection") {
+        // 現在が範囲選択モードの場合、スクロールモードに切り替える
+        mode = "scroll";
+        modeButton.textContent = "範囲選択モードへ";
+        canvas.style.pointerEvents = "none"; // キャンバスのイベントを無効にする
+    } else {
+        // 現在がスクロールモードの場合、範囲選択モードに切り替える
+        mode = "selection";
+        modeButton.textContent = "スクロールモードへ";
+        canvas.style.pointerEvents = "auto"; // キャンバスのイベントを有効にする
+    }
+}
+
+// モード切替ボタンにクリックイベントのリスナーを登録する
+modeButton.addEventListener("click", switchMode);
+
+// キャンバスにマウスが乗ったときにマウスの座標を更新する関数
+function touchupdateMousePosition(e) {
+    // キャンバスの左上からの相対座標に変換する
+    var rect = e.target.getBoundingClientRect();
+    mouseX = e.changedTouches[0].clientX - rect.left;
+    mouseY = e.changedTouches[0].clientY - rect.top;
+}
+
+// キャンバスでマウスを押したときにドラッグ開始時の座標を保存する関数
+function touchstartDrag(e) {
+    // マウスの座標を更新する
+    touchupdateMousePosition(e);
+    // ドラッグ開始時の座標を保存する
+    startX = mouseX;
+    startY = mouseY;
+    // ドラッグ中のフラグを立てる
+    isDragging = true;
+}
+
+// キャンバスでマウスを動かしたときにドラッグ中の範囲を描画する関数
+function touchdrag(e) {
+    e.preventDefault(); // スクロールを防ぐ
+    // ドラッグ中でなければ何もしない
+    if (!isDragging) return;
+    // マウスの座標を更新する
+    touchupdateMousePosition(e);
+    // キャンバスをクリアする
+    ctx.clearRect(0, 0, width, height);
+    // キャンバスに描画する色と線の太さを設定する
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 5;
+    // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
+    var w = mouseX - startX;
+    var h = mouseY - startY;
+    // 矩形を描画する
+    ctx.strokeRect(startX, startY, w, h);
+}
+
+// キャンバスでマウスを離したときにドラッグ終了時の座標を保存する関数
+function touchendDrag(e) {
+    // ドラッグ中でなければ何もしない
+    if (!isDragging) return;
+    // マウスの座標を更新する
+    touchupdateMousePosition(e);
+    // ドラッグ終了時の座標を保存する
+    var endX = mouseX;
+    var endY = mouseY;
+    // ドラッグ中のフラグを下ろす
+    isDragging = false;
+    // ドラッグ開始時と終了時の座標から矩形の左上と右下の座標を計算する
+    var x1 = Math.min(startX, endX);
+    var y1 = Math.min(startY, endY);
+    var x2 = Math.max(startX, endX);
+    var y2 = Math.max(startY, endY);
+    // 矩形の座標を配列に追加する
+    faces.push([x1, y1, x2, y2]);
+    // 隠しフィールドに配列を文字列に変換してセットする
+    var facesInput = document.getElementById("faces");
+    facesInput.value = JSON.stringify(faces);
+}
+
+canvas.addEventListener("touchmove", touchdrag);
+canvas.addEventListener("touchstart", touchstartDrag);
+canvas.addEventListener("touchend", touchendDrag);
+canvas.addEventListener("touchend", touchendDrag);
+
+// ドラッグ操作中に画面の端にマウスがきた場合にその方向に画面をスクロールする関数
+function touchscrollOnDrag(e) {
+    // ドラッグ中でなければ何もしない
+    if (!isDragging) return;
+    // マウスの座標を更新する
+    touchupdateMousePosition(e);
+    // マウスが画面の端にあるかどうかを判定する
+    var edgeOffsetX = window.innerWidth*0.1; // マウスが画面の端からどれだけ離れているとスクロールするか
+    var edgeOffsetY = window.innerHeight*0.1; // マウスが画面の端からどれだけ離れているとスクロールするか
+    var isNearRightEdge = window.innerWidth - e.changedTouches[0].clientX < edgeOffsetX;
+    var isNearLeftEdge = e.changedTouches[0].clientX < edgeOffsetX;
+    var isNearTopEdge = e.changedTouches[0].clientY < edgeOffsetY;
+    var isNearBottomEdge = window.innerHeight - e.changedTouches[0].clientY < edgeOffsetY;
+    // スクロールの速度を設定する
+    var scrollSpeedX = window.innerWidth*0.1;
+    var scrollSpeedY = window.innerHeight*0.1;
+    // マウスが画面の端にある場合にその方向にスクロールする
+    if (isNearRightEdge) {
+        window.scrollBy(scrollSpeedX, 0);
+    } else if (isNearLeftEdge) {
+        window.scrollBy(-scrollSpeedX, 0);
+    }
+    if (isNearBottomEdge) {
+        window.scrollBy(0, scrollSpeedY);
+    } else if (isNearTopEdge) {
+        window.scrollBy(0, -scrollSpeedY);
+    }
+}
+
+// マウス移動イベントにスクロール関数を追加する
+window.addEventListener("touchmove", touchscrollOnDrag);
