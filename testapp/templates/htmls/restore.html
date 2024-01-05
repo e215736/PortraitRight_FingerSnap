@@ -12,10 +12,13 @@
 <p><h2>手動でモザイクなどの処理した部分を元に戻します！</h2></p>
 <img src="{{ url_for('static', filename='images/guide2.gif') }}" width="350">
 <div class="text-container">
-    <h5>使い方のイメ〜ジ(うまくいかない時はリロードしてね)</h5>
+        <h5>使い方のイメ〜ジ(タッチ操作の場合、最初に縮小してね)</h5>
 </div>
 </div>
 <br>
+
+<!-- モード切替ボタンを追加 -->
+<button id="modeButton">スクロールモードへ</button>
 <!-- 処理後の画像を表示 -->
 <img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" id="filename">
 
@@ -31,7 +34,7 @@
     <br>
     <button type="submit" class="button">
         <img src="{{ url_for('static', filename='images/SVGs/eraser-fill.svg') }}" alt="restore" class="svg-icon" style="width: 1em; height: 1em;">
-        加工を消す！
+        加工を戻す！
     </button>
 </form>
 <br>

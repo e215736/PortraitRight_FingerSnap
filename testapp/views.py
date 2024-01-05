@@ -260,7 +260,7 @@ def upload():
 def manual():
     # 手動処理画面に遷移する
     filename = request.args.get('filename')
-    original = request.form.get('original')
+    original = request.args.get('original')
     option = request.args.get('option')
     stamp = request.args.get('stamp')
     stamp_type = request.args.get('stamp_type')
@@ -270,7 +270,7 @@ def manual():
 def process():
     # 手動処理画面から送られたデータを受け取る
     filename = request.form.get('filename')
-    original = request.form.get('filename')
+    original = request.form.get('original')
     option = request.form.get('option')
     stamp_filename = request.form.get('stamp')
     stamp_type = request.form.get('stamp_type')
@@ -376,10 +376,10 @@ def more_manual_process():
                 else:
                     stamp_filename = default_stamp
                     stamp_type = "default"
-                return redirect(url_for('manual', filename=filename, option=option, stamp=stamp_filename, stamp_type=stamp_type)) # 手動処理の場合は別の画面に遷移
+                return redirect(url_for('manual', original=original, filename=filename, option=option, stamp=stamp_filename, stamp_type=stamp_type)) # 手動処理の場合は別の画面に遷移
             else:
                 return 'スタンプ用の画像がありません'
-        return redirect(url_for('manual', filename=filename, option=option)) # 手動処理の場合は別の画面に遷移
+        return redirect(url_for('manual', original=original, filename=filename, option=option)) # 手動処理の場合は別の画面に遷移
     if option == 'mosaic':
         mosaic_process(faces, img) # モザイク処理を行う
     elif option == 'blur':

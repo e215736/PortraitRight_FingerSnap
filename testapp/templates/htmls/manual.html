@@ -13,10 +13,13 @@
     <p><h2>手動で画像の顔を隠します！</h2></p>
     <img src="{{ url_for('static', filename='images/guide.gif') }}" width="350">
     <div class="text-container">
-        <h5>使い方のイメ〜ジ</h5>
+        <h5>使い方のイメ〜ジ(タッチ操作の場合、最初に縮小してね)</h5>
     </div>
 </div>
 <br>
+
+<!-- モード切替ボタンを追加 -->
+<button id="modeButton">スクロールモードへ</button>
 <!-- 手動処理画面で処理したい画像を表示 -->
 <img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" id="filename">
 
@@ -36,7 +39,7 @@
         <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
         加工する！
     </button>
-    
+    <!-- <input type="submit" value="加工する！" class="button"> -->
 </form>
 <br>
 <script src="{{ url_for('static', filename='javascript/manual.js') }}"></script>

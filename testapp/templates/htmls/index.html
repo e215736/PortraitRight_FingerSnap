@@ -37,12 +37,10 @@
     <label class="radio-inline__label" for="item-1">
         モザイク
     </label>
-    
     <input id="item-2" class="radio-inline__input" type="radio" name="option" value="blur"/>
     <label class="radio-inline__label" for="item-2">
         ぼかし
     </label>
-
     <input id="stamp" class="radio-inline__input" type="radio" name="option" value="stamp"/>
     <label class="radio-inline__label" for="stamp">
         スタンプ
@@ -85,7 +83,7 @@
     <div class="option-container">
         <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
         <label class="radio-inline__label" for="manual">
-            手動処理(スマホ未対応)
+            手動処理(スマホ等も対応(バグあり))
             <div id="balloonB" class="balloon">自分で処理したいところを選択できます</div>
         </label>
     </div>
@@ -93,7 +91,7 @@
     <br>
     <div id="library_form" style="display: show;">
         <!-- ラジオボタンでdlibとyolov8を切り替える -->
-        <h1>❹自動処理の処理モードを選択してください</h1>
+        <h1>❹自動処理の処理モードどっちにする？</h1>
         <div class="option-container">
             <input id="dlib" class="radio-inline__input" type="radio" name="library" value="dlib" checked="checked"/>
             <label class="radio-inline__label" for="dlib">
@@ -115,8 +113,17 @@
         <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
         加工する！
     </button>
+    <!-- <input type="submit" value="加工する！" class="button"> -->
 </form>
+
 <br>
+
+<div class="GoogleForm">
+    <iframe
+      src="https://forms.gle/obtcKXzo9Jvd2Rfw7"
+      width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
+</div>
+
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
 
 {% endblock %}

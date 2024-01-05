@@ -78,7 +78,7 @@
     <div class="option-container">
         <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
         <label class="radio-inline__label" for="manual">
-            手動処理
+            手動処理(スマホ等も対応(バグあり))
             <div id="balloonB" class="balloon">自分で処理したいところを選択できます</div>
         </label>
     </div>
@@ -108,6 +108,7 @@
         <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
         加工する！
     </button>
+    <!-- <input type="submit" value="加工する！" class="button"> -->
 </form>
 <br>
 <script src="{{ url_for('static', filename='javascript/more_manual.js') }}"></script>
