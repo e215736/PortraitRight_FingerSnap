@@ -27,7 +27,7 @@
 	    <!-- <button type="submit" class="button">処理した部分の一部を元に戻したい(スマホ等も対応(バグあり))</button> -->
         <button type="submit" class="button">
             <img src="{{ url_for('static', filename='images/SVGs/eraser-fill.svg') }}" alt="restore" class="svg-icon" style="width: 1em; height: 1em;">
-            処理した部分の一部を元に戻したい(スマホ等も対応(バグあり))
+            好きなように処理を消す
         </button>
     </form>
     <!-- さらに加工するボタンを追加 -->
@@ -42,8 +42,13 @@
         </button>
     </form>
     <form action="/" method="get">
-        <a href="/" class="button">新しく画像を加工する</a>
+        <button type="submit" class="button">
+            <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
+             新しく画像を加工する！
+        </button>
     </form>
+
+
     <form>
         <!-- ダウンロードボタンを追加 -->
         <a href="{{ url_for('static', filename='files/' + processed) }}" download="downloaded_{{ processed }}" class="button" role="button">
