@@ -8,6 +8,3 @@ yolov8l_100e.pt
 
 #all pycache files
 __pycache__/
-
-# Ignore all insert or processed images
-testapp/static/files/*
