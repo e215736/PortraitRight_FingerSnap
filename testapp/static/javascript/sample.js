@@ -15,12 +15,22 @@ function checkOption() {
   var option = document.querySelector("input[name='option']:checked").value;
   var type = document.querySelector("input[name='type']:checked").value;
   var library = document.querySelector("input[name='library']:checked").value;
+  var target = document.querySelector("input[name='target']:checked").value;
 
   // ファイルの数を取得する
   var fileCount = document.getElementById("image_data").files.length;
 
   // ファイルの数に応じてフォームを表示または非表示にする
   if (fileCount >= 2) {
+            // process_formとlibrary_formを非表示にする
+      document.getElementById("process_form").style.display = "none";
+      document.getElementById("library_form").style.display = "none";
+      // typeとlibraryの値をautoとdlibに設定する
+      document.getElementById("auto").checked = true;
+      document.getElementById("yolov8").checked = true;
+      if (target == body){
+        document.getElementById("option_form").style.display = "none";
+      }
     // process_formとlibrary_formを非表示にする
     document.getElementById("process_form").style.display = "none";
     document.getElementById("library_form").style.display = "none";
@@ -28,35 +38,61 @@ function checkOption() {
     document.getElementById("auto").checked = true;
     document.getElementById("yolov8").checked = true;
   } else {
-    // process_formとlibrary_formを表示する
-    document.getElementById("process_form").style.display = "block";
-    document.getElementById("library_form").style.display = "block";
-    if (type == "auto") {
-      //balloonAを表示させる
-      document.getElementById("balloonA").style.display = "block";
-      //balloonBを表示させない
-      document.getElementById("balloonB").style.display = "none";
-      if (library == "dlib") {
-        //balloonCを表示させる
-        document.getElementById("balloonC").style.display = "block";
-        //balloonDを表示させない
-        document.getElementById("balloonD").style.display = "none";
+    if (target == "body" || target == "background") {
+      document.getElementById("option_form").style.display = "none";
+      document.getElementById("process_form").style.display = "none";
+      document.getElementById("library_form").style.display = "none";
+    } else {
+
+      // process_formとlibrary_formを表示する
+      document.getElementById("process_form").style.display = "block";
+      document.getElementById("library_form").style.display = "block";
+      if (type == "auto") {
+        //balloonAを表示させる
+        document.getElementById("balloonA").style.display = "block";
+        //balloonBを表示させない
+        document.getElementById("balloonB").style.display = "none";
+        if (library == "dlib") {
+          //balloonCを表示させる
+          document.getElementById("balloonC").style.display = "block";
+          //balloonDを表示させない
+          document.getElementById("balloonD").style.display = "none";
+        }
+        if (library == "yolov8") {
+          //balloonCを表示させる
+          document.getElementById("balloonD").style.display = "block";
+          //balloonDを表示させない
+          document.getElementById("balloonC").style.display = "none";
+        }
       }
-      if (library == "yolov8") {
-        //balloonCを表示させる
-        document.getElementById("balloonD").style.display = "block";
-        //balloonDを表示させない
-        document.getElementById("balloonC").style.display = "none";
+      if (type == "manual") {
+        //balloonBを表示させる
+        document.getElementById("balloonB").style.display = "block";
+        //balloonAを表示させない
+        document.getElementById("balloonA").style.display = "none";
+        //hideStampForm(); // スタンプ用の画像を選択するフォームを非表示にする
+        //library_formを表示させない
+        document.getElementById("library_form").style.display = "none";
       }
     }
-    if (type == "manual") {
+    if (target == "face") {
       //balloonBを表示させる
-      document.getElementById("balloonB").style.display = "block";
-      //balloonAを表示させない
-      document.getElementById("balloonA").style.display = "none";
-      //hideStampForm(); // スタンプ用の画像を選択するフォームを非表示にする
-      //library_formを表示させない
-      document.getElementById("library_form").style.display = "none";
+      document.getElementById("balloonE").style.display = "block";
+      document.getElementById("balloonF").style.display = "none";
+      document.getElementById("balloonG").style.display = "none";
+
+    }
+    if (target == "body") {
+      //balloonBを表示させる
+      document.getElementById("balloonE").style.display = "none";
+      document.getElementById("balloonF").style.display = "block";
+      document.getElementById("balloonG").style.display = "none";
+    }
+    if (target == "background") {
+      //balloonBを表示させる
+      document.getElementById("balloonE").style.display = "none";
+      document.getElementById("balloonF").style.display = "none";
+      document.getElementById("balloonG").style.display = "block";
     }
   }
 
@@ -90,6 +126,11 @@ for (var i = 0; i < radios.length; i++) {
 
 // ラジオボタンが変更されたときにラジオボタンの値をチェックする
 var radios = document.querySelectorAll("input[name='library']");
+for (var i = 0; i < radios.length; i++) {
+  radios[i].addEventListener("change", checkOption);
+}
+// ラジオボタンが変更されたときにラジオボタンの値をチェックする
+var radios = document.querySelectorAll("input[name='target']");
 for (var i = 0; i < radios.length; i++) {
   radios[i].addEventListener("change", checkOption);
 }
