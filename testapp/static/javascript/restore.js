@@ -1,13 +1,13 @@
 // 手動でモザイクなどの処理した部分を元に戻す画面で処理したい画像の部分を範囲選択するための変数と関数
 
 // 画像の要素を取得する
-var processed = document.getElementById("filename");
+var original = document.getElementById("filename");
 // 画像の上に重ねるキャンバスを作成する
 var canvas = document.createElement("canvas");
 // キャンバスのコンテキストを取得する
 var ctx = canvas.getContext("2d");
 // キャンバスを画像の下に挿入する
-processed.parentNode.insertBefore(canvas, processed.nextSibling);
+original.parentNode.insertBefore(canvas, original.nextSibling);
 // マウスの座標を保存する変数
 var mouseX = 0;
 var mouseY = 0;
@@ -24,15 +24,15 @@ var width, height;
 // ページが読み込まれたときに画像のサイズを取得し、キャンバスの位置とサイズを設定する
 window.onload = function () {
     // 画像のサイズを取得する（naturalWidthやnaturalHeightを使う）
-    width = processed.naturalWidth;
-    height = processed.naturalHeight;
+    width = original.naturalWidth;
+    height = original.naturalHeight;
     // キャンバスのサイズを設定する
     canvas.width = width;
     canvas.height = height;
     // キャンバスのスタイルを設定する（positionやtopやleftを画像と一致させる）
     canvas.style.position = "absolute";
-    canvas.style.top = processed.offsetTop + "px";
-    canvas.style.left = processed.offsetLeft + "px";
+    canvas.style.top = original.offsetTop + "px";
+    canvas.style.left = original.offsetLeft + "px";
     canvas.style.cursor = "crosshair";
 };
 
@@ -229,8 +229,6 @@ canvas.addEventListener("touchmove", touchdrag);
 canvas.addEventListener("touchstart", touchstartDrag);
 canvas.addEventListener("touchend", touchendDrag);
 canvas.addEventListener("touchend", touchendDrag);
-
-
 
 // ドラッグ操作中に画面の端にマウスがきた場合にその方向に画面をスクロールする関数
 function touchscrollOnDrag(e) {

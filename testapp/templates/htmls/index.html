@@ -16,50 +16,41 @@
 </div>
 <br>
 
-<h1>❶加工する画像を選択してください</h1>
-
 <!-- ファイル選択とアップロードのフォーム -->
 <form action="/upload" method="post" enctype="multipart/form-data">
+
+    <h1>❶加工する画像を選択してください</h1>
     <label class="custom-file-upload">
-        <input type="file" name="file" accept="image/*" required style="display:none"
-               onchange="document.getElementById('filename').textContent = this.files[0].name">
+        <input type="file" name="image_data" id="image_data" accept="image/*" style="display:none" multiple required onchange="showFileName()" >
         アップロードする画像を選ぶ
     </label>
     <div id="filename" class="filename-display">選択されていません</div>
-    <!-- <input type="file" name="file" accept="image/*" required> -->
+    <div id="error_message" class="error_message"></div>
     <br>
+
     <!-- ラジオボタンで処理を選択 -->
-
-    <br><h1>❷顔に適用する処理を選択してください</h1>
-    
-    <input id="item-1" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
-
-    <label class="radio-inline__label" for="item-1">
+    <h1>❷顔に適用する処理を選択してください</h1>
+    <input id="item-2" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
+    <label class="radio-inline__label" for="item-2">
         モザイク
     </label>
-    <input id="item-2" class="radio-inline__input" type="radio" name="option" value="blur"/>
-    <label class="radio-inline__label" for="item-2">
+    <input id="item-3" class="radio-inline__input" type="radio" name="option" value="blur"/>
+    <label class="radio-inline__label" for="item-3">
         ぼかし
     </label>
     <input id="stamp" class="radio-inline__input" type="radio" name="option" value="stamp"/>
     <label class="radio-inline__label" for="stamp">
         スタンプ
     </label>
-
-    <br>
-
     <!-- スタンプ用の画像を選択するフォームを追加する -->
     <div id="stamp_form" style="display: none;">
-        <br>
         <h3>スタンプ用の画像ファイルを選択してください</h3>
-        <!-- <input type="file" name="stamp"> -->
         <label class="custom-file-upload">
             <input type="file" name="stamp" accept="image/*" style="display:none"
                    onchange="document.getElementById('filename2').textContent = this.files[0].name">
             スタンプに使いたい画像がある方!押して
         </label>
         <div id="filename2" class="filename-display">選択されていません</div>
-        <br>
         <h3>または、デフォルトのスタンプをクリックしてください</h3>
         <!-- デフォルトのスタンプを画像として表示する -->
         <div id="default_stamps">
@@ -71,24 +62,27 @@
         <input type="hidden" name="default_stamp" id="default_stamp">
     </div>
     <br>
-    <!-- ラジオボタンで自動処理と手動処理を選択する -->
-    <h1>❸自動処理と手動処理を選択してください</h1>
-    <div class="option-container">
-        <input id="auto" class="radio-inline__input" type="radio" name="type" value="auto" checked="checked"/>
-        <label class="radio-inline__label" for="auto">
-            自動処理
-            <div id="balloonA" class="balloon">AIが自動で処理をします</div>
-        </label>
-    </div>
-    <div class="option-container">
-        <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
-        <label class="radio-inline__label" for="manual">
-            手動処理(スマホ等も対応(バグあり))
-            <div id="balloonB" class="balloon">自分で処理したいところを選択できます</div>
-        </label>
+
+    <div id="process_form" style="display: show;">
+        <!-- ラジオボタンで自動処理と手動処理を選択する -->
+        <h1>❸自動処理と手動処理を選択してください</h1>
+        <div class="option-container">
+            <input id="auto" class="radio-inline__input" type="radio" name="type" value="auto" checked="checked"/>
+            <label class="radio-inline__label" for="auto">
+                自動処理
+                <div id="balloonA" class="balloon">AIが自動で処理をします</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="manual" class="radio-inline__input" type="radio" name="type" value="manual"/>
+            <label class="radio-inline__label" for="manual">
+                手動処理
+                <div id="balloonB" class="balloon">自分で処理したいところを選択できます</div>
+            </label>
+        </div>
     </div>
     <br>
-    <br>
+
     <div id="library_form" style="display: show;">
         <!-- ラジオボタンでdlibとyolov8を切り替える -->
         <h1>❹自動処理の処理モードどっちにする？</h1>
@@ -108,14 +102,13 @@
         </div>
     </div>
     <br>
-    <br>
+    
     <button type="submit" class="button">
         <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
         加工する！
     </button>
-    <!-- <input type="submit" value="加工する！" class="button"> -->
-</form>
 
+</form>
 <br>
 
 <div class="GoogleForm">

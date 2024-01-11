@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="flex">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+        </div>
+        <div class="text-container">
+            <h3>肖像権指パッチン</h3>
+        </div>
+    </div>
+    <p><h2>画像の加工が完了しました</h2></p>
+</div>
+
+<!-- 処理前の画像と処理後の画像を表示 -->
+{% for original, filename in images.items() %}
+<div class="flex">
+    <img src="{{ url_for('static', filename='files/' + original) }}" alt="filename" width="50%">
+    <img src="{{ url_for('static', filename='files/' + filename) }}" alt="processed" width="50%">
+</div>
+<div class="button.btn ">
+    <div class="container">
+        <form>
+        <option value="{{ filename }}">{{ original }}</option>
+        <a href="{{ url_for('static', filename='files/' + filename) }}" download="downloaded_{{ filename }}" class="button" role="button">
+            <img src="{{ url_for('static', filename='images/SVGs/download.svg') }}" alt="Download Processed Image" class="svg-icon" style="width: 1em; height: 1em; "> 
+            加工後の画像をダウンロードする
+        </a>
+        </form>
+    </div>
+</div>
+<br>
+{% endfor %}
+
+<div class="button.btn ">
+    <div class="container">
+        <form action="/" method="get">
+            <button type="submit" class="button">
+                <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
+                新しく画像を加工する！
+            </button>
+        </form>
+        <br>
+    </div>
+</div>
+<br>
+
+<a href="https://docs.google.com/document/d/1OEpoBB9DtwWiP6YmjgQovh9EyFBZ-AH8vUmGbsJu34c/edit?usp=sharing">時間短めレビューの先はこちら</a>
+
+<div class="GoogleForm">
+    <iframe
+      src="https://forms.gle/obtcKXzo9Jvd2Rfw7"
+      width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
+</div>
+<script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
+{% endblock %}

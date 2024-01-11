@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, send_file
 from testapp import app
 import numpy as np
 import cv2
@@ -6,6 +6,7 @@ import dlib
 import os
 import time
 import datetime
+import zipfile # zipファイルを作成するためのモジュール
 
 detector = dlib.get_frontal_face_detector()
 
@@ -171,31 +172,102 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    file = request.files['file']
-    if not file:
-        return 'ファイルがありません'
-    filename = file.filename
-    original = file.filename
-    file.save('testapp/static/files/' + filename)
-    img = cv2.imread('testapp/static/files/' + filename)
-    option = request.form.get('option')
-    type = request.form.get('type')
-    library = request.form.get('library') # フォームから処理ライブラリの値を取得する
-    if type == 'auto':
-        if library == 'dlib': # dlibの場合
-            faces0 = detector(img) # dlibで顔の検出を行う
-            faces = []
-            for face0 in faces0:
-                face = []
-                face.append(face0.left())
-                face.append(face0.top())
-                face.append(face0.right())
-                face.append(face0.bottom())
-                faces.append(face)
-        elif library == 'yolov8': # yolov8の場合
+    files = request.files.getlist('image_data') # フォームからアップロードされた画像ファイルのリストを取得する
+    if len(files) >= 2: # 複数枚の場合
+        originals = [] # 処理前の画像ファイル名のリスト
+        filenames = [] # 処理後の画像ファイル名のリスト
+        for file in files: # 各画像ファイルに対してループ
+            filename = file.filename
+            original = file.filename
+            file.save('testapp/static/files/' + filename)
+            img = cv2.imread('testapp/static/files/' + filename)
+            option = request.form.get('option')
             faces = yol(filename, model) # yolov8で顔の検出を行う
-    elif type == 'manual':
-        if option == 'stamp':
+            if option == 'mosaic':
+                mosaic_process(faces, img) # モザイク処理を行う
+            elif option == 'blur':
+                blur_process(faces, img) # ぼかし処理を行う
+            elif option == 'stamp':
+                # フォームからスタンプの画像を取得する
+                stamp_file = request.files['stamp']
+                # 隠しフィールドからデフォルトのスタンプのファイル名を取得する
+                default_stamp = request.form.get('default_stamp')
+                # どちらかがあれば処理を続ける
+                if stamp_file or default_stamp:
+                    # フォームからスタンプの画像があればそれを使う
+                    if stamp_file:
+                        stamp_filename = stamp_file.filename
+                        stamp_filename = str(time.time()) + '_' + stamp_filename
+                        stamp_file.save('testapp/static/stamp/' + stamp_filename)
+                        stamp = cv2.imread('testapp/static/stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
+                    # フォームからスタンプの画像がなければデフォルトのスタンプを使う
+                    else:
+                        stamp_filename = default_stamp
+                        stamp = cv2.imread('testapp/static/default_stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
+                else:
+                    return 'スタンプ用の画像がありません'
+                if stamp.shape[2] == 4:
+                    stamp_process(faces, img, stamp, stamp_filename) # スタンプ処理を行う
+                else:
+                    stamp_process2(faces, img, stamp, stamp_filename) # スタンプ処理を行う
+            cv2.imwrite('testapp/static/files/processed_' + filename, img)
+            # 処理前と処理後の画像ファイル名をリストに追加
+            originals.append(original)
+            filenames.append('processed_'+filename)
+        images = dict(zip(originals, filenames)) # リストを辞書に変換
+        # processed.htmlに渡す引数をリストに変更
+        return render_template('htmls/multi_processed.html', images=images) # 辞書を渡す
+    else:
+        file = files[0]
+        if not file:
+            return 'ファイルがありません'
+        filename = file.filename
+        original = file.filename
+        file.save('testapp/static/files/' + filename)
+        img = cv2.imread('testapp/static/files/' + filename)
+        option = request.form.get('option')
+        type = request.form.get('type')
+        library = request.form.get('library') # フォームから処理ライブラリの値を取得する
+        if type == 'auto':
+            if library == 'dlib': # dlibの場合
+                faces0 = detector(img) # dlibで顔の検出を行う
+                faces = []
+                for face0 in faces0:
+                    face = []
+                    face.append(face0.left())
+                    face.append(face0.top())
+                    face.append(face0.right())
+                    face.append(face0.bottom())
+                    faces.append(face)
+            elif library == 'yolov8': # yolov8の場合
+                faces = yol(filename, model) # yolov8で顔の検出を行う
+        elif type == 'manual':
+            if option == 'stamp':
+                # フォームからスタンプの画像を取得する
+                stamp_file = request.files['stamp']
+                # 隠しフィールドからデフォルトのスタンプのファイル名を取得する
+                default_stamp = request.form.get('default_stamp')
+                # どちらかがあれば処理を続ける
+                if stamp_file or default_stamp:
+                    # フォームからスタンプの画像があればそれを使う
+                    if stamp_file:
+                        stamp_filename = stamp_file.filename
+                        stamp_filename = str(time.time()) + '_' + stamp_filename
+                        stamp_file.save('testapp/static/stamp/' + stamp_filename)
+                        stamp_type = "file"
+                    # フォームからスタンプの画像がなければデフォルトのスタンプを使う
+                    else:
+                        stamp_filename = default_stamp
+                        stamp_type = "default"
+                    return redirect(url_for('manual', original=original, filename=filename, option=option, stamp=stamp_filename, stamp_type=stamp_type)) # 手動処理の場合は別の画面に遷移
+                else:
+                    return 'スタンプ用の画像がありません'
+            return redirect(url_for('manual', original=original, filename=filename, option=option)) # 手動処理の場合は別の画面に遷移
+        if option == 'mosaic':
+            mosaic_process(faces, img) # モザイク処理を行う
+        elif option == 'blur':
+            blur_process(faces, img) # ぼかし処理を行う
+        elif option == 'stamp':
             # フォームからスタンプの画像を取得する
             stamp_file = request.files['stamp']
             # 隠しフィールドからデフォルトのスタンプのファイル名を取得する
@@ -207,54 +279,20 @@ def upload():
                     stamp_filename = stamp_file.filename
                     stamp_filename = str(time.time()) + '_' + stamp_filename
                     stamp_file.save('testapp/static/stamp/' + stamp_filename)
-                    stamp_type = "file"
+                    stamp = cv2.imread('testapp/static/stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
                 # フォームからスタンプの画像がなければデフォルトのスタンプを使う
                 else:
                     stamp_filename = default_stamp
-                    stamp_type = "default"
-                return redirect(url_for('manual', original=original, filename=filename, option=option, stamp=stamp_filename, stamp_type=stamp_type)) # 手動処理の場合は別の画面に遷移
+                    stamp = cv2.imread('testapp/static/default_stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
             else:
                 return 'スタンプ用の画像がありません'
-        return redirect(url_for('manual', original=original, filename=filename, option=option)) # 手動処理の場合は別の画面に遷移
-    if option == 'mosaic':
-        mosaic_process(faces, img) # モザイク処理を行う
-    elif option == 'blur':
-        blur_process(faces, img) # ぼかし処理を行う
-    elif option == 'stamp':
-        # フォームからスタンプの画像を取得する
-        stamp_file = request.files['stamp']
-        # 隠しフィールドからデフォルトのスタンプのファイル名を取得する
-        default_stamp = request.form.get('default_stamp')
-        # どちらかがあれば処理を続ける
-        if stamp_file or default_stamp:
-            # フォームからスタンプの画像があればそれを使う
-            if stamp_file:
-                stamp_filename = stamp_file.filename
-                stamp_filename = str(time.time()) + '_' + stamp_filename
-                stamp_file.save('testapp/static/stamp/' + stamp_filename)
-                stamp = cv2.imread('testapp/static/stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
-            # フォームからスタンプの画像がなければデフォルトのスタンプを使う
+            if stamp.shape[2] == 4:
+                stamp_process(faces, img, stamp, stamp_filename) # スタンプ処理を行う
             else:
-                stamp_filename = default_stamp
-                stamp = cv2.imread('testapp/static/default_stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
-        else:
-            return 'スタンプ用の画像がありません'
-        if stamp.shape[2] == 4:
-            stamp_process(faces, img, stamp, stamp_filename) # スタンプ処理を行う
-        else:
-            stamp_process2(faces, img, stamp, stamp_filename) # スタンプ処理を行う
-    #     自分たちで透過処理を行うなら
-    #     stamp = cv2.imread('testapp/static/stamp/' + stamp_filename)
-    #     # スタンプ画像にアルファチャンネルを追加する
-    #     stamp = cv2.cvtColor(stamp, cv2.COLOR_BGR2BGRA)
-    #     # スタンプ画像のアルファ値を半分にする
-    #     stamp[:, :, 3] = stamp[:, :, 3] // 2
-    #     # スタンプ画像の白色を透明色にする
-    #     transparence = (255, 255, 255, 255) # 白色のRGBA値
-    #     stamp = np.where(stamp == transparence, 0, stamp) # 白色の部分を0にする
-    #     stamp_process(faces, img, stamp)
-    cv2.imwrite('testapp/static/files/processed_' + filename, img)
-    return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
+                stamp_process2(faces, img, stamp, stamp_filename) # スタンプ処理を行う
+        cv2.imwrite('testapp/static/files/processed_' + filename, img)
+        return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
+
 
 @app.route('/manual')
 def manual():
