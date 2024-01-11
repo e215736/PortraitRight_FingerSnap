@@ -27,39 +27,58 @@
     <div id="filename" class="filename-display">選択されていません</div>
     <div id="error_message" class="error_message"></div>
     <br>
+    <!-- ラジオボタンで処理を選択 -->
+    <h1>❷加工対象を選択してください。</h1>
+    <input id="face" class="radio-inline__input" type="radio" name="target" value="face" checked="checked"/>
+    <label class="radio-inline__label" for="face">
+        顔のみ
+        <div id="balloonE" class="balloon">全ての顔を対象</div>
+    </label>
+    <input id="body" class="radio-inline__input" type="radio" name="target" value="body"/>
+    <label class="radio-inline__label" for="body">
+        全身
+        <div id="balloonF" class="balloon">全身自動ぼかし</div>
+    </label>
+    <input id="background" class="radio-inline__input" type="radio" name="target" value="background"/>
+    <label class="radio-inline__label" for="background">
+        背景のみ
+        <div id="balloonG" class="balloon">背景自動ぼかし</div>
+    </label>
 
     <!-- ラジオボタンで処理を選択 -->
-    <h1>❷顔に適用する処理を選択してください</h1>
-    <input id="item-2" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
-    <label class="radio-inline__label" for="item-2">
-        モザイク
-    </label>
-    <input id="item-3" class="radio-inline__input" type="radio" name="option" value="blur"/>
-    <label class="radio-inline__label" for="item-3">
-        ぼかし
-    </label>
-    <input id="stamp" class="radio-inline__input" type="radio" name="option" value="stamp"/>
-    <label class="radio-inline__label" for="stamp">
-        スタンプ
-    </label>
-    <!-- スタンプ用の画像を選択するフォームを追加する -->
-    <div id="stamp_form" style="display: none;">
-        <h3>スタンプ用の画像ファイルを選択してください</h3>
-        <label class="custom-file-upload">
-            <input type="file" name="stamp" accept="image/*" style="display:none"
-                   onchange="document.getElementById('filename2').textContent = this.files[0].name">
-            スタンプに使いたい画像がある方!押して
+    <div id="option_form" style="display: show;">
+        <h1>❸顔に適用する処理を選択してください</h1>
+        <input id="item-2" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
+        <label class="radio-inline__label" for="item-2">
+            モザイク
         </label>
-        <div id="filename2" class="filename-display">選択されていません</div>
-        <h3>または、デフォルトのスタンプをクリックしてください</h3>
-        <!-- デフォルトのスタンプを画像として表示する -->
-        <div id="default_stamps">
-            {% for stamp in default_stamps %}
-            <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
-            {% endfor %}
+        <input id="item-3" class="radio-inline__input" type="radio" name="option" value="blur"/>
+        <label class="radio-inline__label" for="item-3">
+            ぼかし
+        </label>
+        <input id="stamp" class="radio-inline__input" type="radio" name="option" value="stamp"/>
+        <label class="radio-inline__label" for="stamp">
+            スタンプ
+        </label>
+        <!-- スタンプ用の画像を選択するフォームを追加する -->
+        <div id="stamp_form" style="display: none;">
+            <h3>スタンプ用の画像ファイルを選択してください</h3>
+            <label class="custom-file-upload">
+                <input type="file" name="stamp" accept="image/*" style="display:none"
+                    onchange="document.getElementById('filename2').textContent = this.files[0].name">
+                スタンプに使いたい画像がある方!押して
+            </label>
+            <div id="filename2" class="filename-display">選択されていません</div>
+            <h3>または、デフォルトのスタンプをクリックしてください</h3>
+            <!-- デフォルトのスタンプを画像として表示する -->
+            <div id="default_stamps">
+                {% for stamp in default_stamps %}
+                <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
+                {% endfor %}
+            </div>
+            <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
+            <input type="hidden" name="default_stamp" id="default_stamp">
         </div>
-        <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
-        <input type="hidden" name="default_stamp" id="default_stamp">
     </div>
     <br>
 
