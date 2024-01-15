@@ -34,6 +34,7 @@ window.onload = function () {
     canvas.style.top = original.offsetTop + "px";
     canvas.style.left = original.offsetLeft + "px";
     canvas.style.cursor = "crosshair";
+    // drawFaces();
 };
 
 // キャンバスにマウスが乗ったときにマウスの座標を更新する関数
@@ -65,12 +66,18 @@ function drag(e) {
     ctx.clearRect(0, 0, width, height);
     // キャンバスに描画する色と線の太さを設定する
     ctx.strokeStyle = "red";
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 6;
     // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
-    var w = mouseX - startX;
-    var h = mouseY - startY;
+    var x1 = Math.min(Math.max(startX, 0), width - 0.1);
+    var y1 = Math.min(Math.max(startY, 0), height - 0.1);
+    var x2 = Math.min(Math.max(mouseX, 0.1), width);
+    var y2 = Math.min(Math.max(mouseY, 0.1), height);
+    var w = x2 - x1;
+    var h = y2 - y1;
     // 矩形を描画する
-    ctx.strokeRect(startX, startY, w, h);
+    ctx.strokeRect(x1, y1, w, h);
+    // 保存されたバウンディングボックスを再描画
+    drawFaces();
 }
 
 // キャンバスでマウスを離したときにドラッグ終了時の座標を保存する関数
@@ -80,20 +87,35 @@ function endDrag(e) {
     // マウスの座標を更新する
     updateMousePosition(e);
     // ドラッグ終了時の座標を保存する
-    var endX = mouseX;
-    var endY = mouseY;
+    var x1 = Math.min(Math.max(startX, 0), width - 0.1);
+    var y1 = Math.min(Math.max(startY, 0), height - 0.1);
+    var x2 = Math.min(Math.max(mouseX, 0.1), width);
+    var y2 = Math.min(Math.max(mouseY, 0.1), height);
     // ドラッグ中のフラグを下ろす
     isDragging = false;
     // ドラッグ開始時と終了時の座標から矩形の左上と右下の座標を計算する
-    var x1 = Math.min(startX, endX);
-    var y1 = Math.min(startY, endY);
-    var x2 = Math.max(startX, endX);
-    var y2 = Math.max(startY, endY);
+    var minX = Math.min(x1, x2);
+    var minY = Math.min(y1, y2);
+    var maxX = Math.max(x1, x2);
+    var maxY = Math.max(y1, y2);
     // 矩形の座標を配列に追加する
-    faces.push([x1, y1, x2, y2]);
+    faces.push([minX, minY, maxX, maxY]);
     // 隠しフィールドに配列を文字列に変換してセットする
     var facesInput = document.getElementById("faces");
     facesInput.value = JSON.stringify(faces);
+    ctx.clearRect(0, 0, width, height);
+    // 保存されたバウンディングボックスを再描画
+    drawFaces();
+}
+
+// 保存されたバウンディングボックスを描画する関数
+function drawFaces() {
+    ctx.strokeStyle = "Red";
+    ctx.lineWidth = 6;
+    for (var i = 0; i < faces.length; i++) {
+        var face = faces[i];
+        ctx.strokeRect(face[0], face[1], face[2] - face[0], face[3] - face[1]);
+    }
 }
 
 // キャンバスにマウスイベントのリスナーを登録する

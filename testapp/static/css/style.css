@@ -48,34 +48,45 @@ p {
     clip: rect(1px, 1px, 1px, 1px);
     position: absolute !important;
 }
+
+.section {
+    text-align: left;
+    margin: auto;
+    position: relative;
+    left: 40px;
+}
   
 .radio-inline__label {
     display: inline-block;
     padding: 1.5rem 2rem;
-    margin-right: 18px;
+    margin-right: 30px;
     border-radius: 3px;
     transition: all .2s;
     font-size: 19pt;
+    position: relative;
+    left: 80px;
     font-family:"Hiragino Maru Gothic Pro W4";
 }
   
 .radio-inline__input:checked + .radio-inline__label {
-      background: #FFCC00;
-      color: white;     
+    background: #2cb4ad;
+    color: white;
+    position: relative;
+    left: 80px;
 }
 
 .button {
     display       : inline-block;
     border-radius : 5%;          /* 角丸       */
-    font-size     : 22pt;        /* 文字サイズ */
+    font-size     : 27pt;        /* 文字サイズ */
     text-align    : center;      /* 文字位置   */
     cursor        : pointer;     /* カーソル   */
     padding       : 12px 12px;   /* 余白       */
     background    : white;     /* 背景色     */
-    color         : #ffc800;     /* 文字色     */
+    color         : #2cb4ad;     /* 文字色     */
     line-height   : 2em;         /* 1行の高さ  */
     transition    : .3s;         /* なめらか変化 */
-    border        : 4px solid #ffc800;    /* 枠の指定 */
+    border        : 4px solid #2cb4ad;    /* 枠の指定 */
     text-decoration: none;
     font-weight:bold;
     font-family:"Hiragino Maru Gothic Pro W4"
@@ -84,7 +95,7 @@ p {
 .button:hover {
     box-shadow    : none;        /* カーソル時の影消去 */
     color         : white;     /* 背景色     */
-    background    : #FFCC00;     /* 文字色     */
+    background    : #2cb4ad;     /* 文字色     */
     text-decoration: none;
     font-weight:bold;
 }
@@ -97,7 +108,7 @@ p {
 .default_stamp:hover {
     height: 100px;
     width: auto;
-    background    : #FFEE88;     /* 背景色     */
+    background    : #8ae6e1;     /* 背景色     */
 }
 
 /* 吹き出しの共通スタイルを定義 */
@@ -105,7 +116,7 @@ p {
     display: none;
     width: auto;
     height: auto;
-    background-color: #ffea94;
+    background-color: #8ae6e1;
     border-radius: 12px;
     padding: 20px;
     position: relative;/* よくわからんけど矢印に関係する */
@@ -118,11 +129,11 @@ p {
 .balloon:before {
     content: "";
     position: absolute;
-    top: -30px; /* 矢印の位置を吹き出しの上に設定 */
+    top: -28px; /* 矢印の位置を吹き出しの上に設定 */
     left: 50%; /* 矢印の位置を吹き出しの左端から20%の位置に設定 */
     margin-left: -15px;
     border: 15px solid transparent;
-    border-bottom: 15px solid #ffea94; /* 下向きの矢印を作成 */
+    border-bottom: 15px solid #8ae6e1; /* 下向きの矢印を作成 */
 }
 
 /* ラジオボタンと吹き出しを含むコンテナのスタイルを定義 */
@@ -141,18 +152,32 @@ p {
     background    : #ddd;     /* 背景色     */
     transition: background-color 0.3s; /* 色変更のアニメーションを滑らかに */
     margin-right: 10px; /* 画像の選択と選択されていませんの間のスペース */
+    position: relative;
+    left: 80px;
 }
   
 .custom-file-upload:hover {
+    border: 1px solid #2cb4ad;
     color         : #FFFFFF;     /* 文字色     */
-    background-color: #FFCC00; /* カーソルが上にある時の背景色 */
+    background-color: #2cb4ad; /* カーソルが上にある時の背景色 */
+    position: relative;
+    left: 80px;
 }
 
 .filename-display {
     display: inline-block;
     vertical-align: center; /* テキストを上揃えにする */
+    position: relative;
+    left: 80px;
 }
 
 .button:hover .svg-icon { /* SVG画像がホバー反応するように追加 */
     filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(359deg) brightness(102%) contrast(104%);
 }
+
+.stamp-container {
+    display: grid;
+    width: 700px;
+    grid-template-columns: repeat(7, 1fr); /* 7つの同じ幅の列 */
+    column-gap: 1px;
+}   

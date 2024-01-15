@@ -447,3 +447,7 @@ def more_manual_process():
             stamp_process2(faces, img, stamp, stamp_filename) # スタンプ処理を行う
     cv2.imwrite('testapp/static/files/processed_' + filename, img)
     return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
+
+@app.route('/intro')
+def intro():
+    return render_template('htmls/intro.html')
