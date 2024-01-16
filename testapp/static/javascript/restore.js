@@ -65,12 +65,14 @@ function drag(e) {
     ctx.clearRect(0, 0, width, height);
     // キャンバスに描画する色と線の太さを設定する
     ctx.strokeStyle = "blue";
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 3;
     // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
     var w = mouseX - startX;
     var h = mouseY - startY;
     // 矩形を描画する
     ctx.strokeRect(startX, startY, w, h);
+    // 保存されたバウンディングボックスを再描画
+    drawFaces();
 }
 
 // キャンバスでマウスを離したときにドラッグ終了時の座標を保存する関数
@@ -85,16 +87,30 @@ function endDrag(e) {
     // ドラッグ中のフラグを下ろす
     isDragging = false;
     // ドラッグ開始時と終了時の座標から矩形の左上と右下の座標を計算する
-    var x1 = Math.min(startX, endX);
-    var y1 = Math.min(startY, endY);
-    var x2 = Math.max(startX, endX);
-    var y2 = Math.max(startY, endY);
+    var x1 = Math.min(Math.max(startX,0), Math.max(endX,0));
+    var y1 = Math.min(Math.max(startY,0), Math.max(endY,0));
+    var x2 = Math.max(Math.min(startX,width), Math.min(endX,width));
+    var y2 = Math.max(Math.min(startY,height), Math.min(endY,height));
     // 矩形の座標を配列に追加する
     faces.push([x1, y1, x2, y2]);
     // 隠しフィールドに配列を文字列に変換してセットする
     var facesInput = document.getElementById("faces");
     facesInput.value = JSON.stringify(faces);
+    ctx.clearRect(0, 0, width, height);
+    // 保存されたバウンディングボックスを再描画
+    drawFaces();
 }
+
+// 保存されたバウンディングボックスを描画する関数
+function drawFaces() {
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 3;
+    for (var i = 0; i < faces.length; i++) {
+        var face = faces[i];
+        ctx.strokeRect(face[0], face[1], face[2] - face[0], face[3] - face[1]);
+    }
+}
+
 
 // キャンバスにマウスイベントのリスナーを登録する
 canvas.addEventListener("mousemove", drag);
@@ -102,7 +118,10 @@ canvas.addEventListener("mousedown", startDrag);
 canvas.addEventListener("mouseup", endDrag);
 canvas.addEventListener("mouseout", endDrag);
 
-document.getElementById('backButton').addEventListener('click', function() {
+// ロゴ画像の要素を取得する
+var backButton = document.getElementById('backButton');
+// ロゴ画像のクリックイベントにリスナーを登録する
+backButton.addEventListener('click', function() {
     var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
     // ページをリダイレクト
     window.location.href = returnHTML;
@@ -194,12 +213,13 @@ function touchdrag(e) {
     ctx.clearRect(0, 0, width, height);
     // キャンバスに描画する色と線の太さを設定する
     ctx.strokeStyle = "blue";
-    ctx.lineWidth = 5;
-    // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
+    ctx.lineWidth = 3;    // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
     var w = mouseX - startX;
     var h = mouseY - startY;
     // 矩形を描画する
     ctx.strokeRect(startX, startY, w, h);
+    // 保存されたバウンディングボックスを再描画
+    drawFaces();
 }
 
 // キャンバスでマウスを離したときにドラッグ終了時の座標を保存する関数
@@ -214,15 +234,18 @@ function touchendDrag(e) {
     // ドラッグ中のフラグを下ろす
     isDragging = false;
     // ドラッグ開始時と終了時の座標から矩形の左上と右下の座標を計算する
-    var x1 = Math.min(startX, endX);
-    var y1 = Math.min(startY, endY);
-    var x2 = Math.max(startX, endX);
-    var y2 = Math.max(startY, endY);
+    var x1 = Math.min(Math.max(startX,0), Math.max(endX,0));
+    var y1 = Math.min(Math.max(startY,0), Math.max(endY,0));
+    var x2 = Math.max(Math.min(startX,width), Math.min(endX,width));
+    var y2 = Math.max(Math.min(startY,height), Math.min(endY,height));
     // 矩形の座標を配列に追加する
     faces.push([x1, y1, x2, y2]);
     // 隠しフィールドに配列を文字列に変換してセットする
     var facesInput = document.getElementById("faces");
     facesInput.value = JSON.stringify(faces);
+    ctx.clearRect(0, 0, width, height);
+    // 保存されたバウンディングボックスを再描画
+    drawFaces();
 }
 
 canvas.addEventListener("touchmove", touchdrag);

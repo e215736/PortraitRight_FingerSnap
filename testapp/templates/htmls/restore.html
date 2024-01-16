@@ -1,24 +1,26 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container"><div class="flex">
-    <div class="image-container">
-        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+<div class="container">
+    <div class="flex">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+        </div>
+        <div class="text-container">
+            <h2>肖像権指パッチン</h2>
+        </div>
     </div>
+    <p><h2>手動でモザイクなどの処理した部分を元に戻します！</h2></p>
+    <img src="{{ url_for('static', filename='images/guide2.gif') }}" width="350">
     <div class="text-container">
-        <h2>肖像権指パッチン</h2>
+        <h5>使い方のイメ〜ジ(タッチ操作の場合、最初に縮小してね)</h5>
     </div>
-</div>
-<p><h2>手動でモザイクなどの処理した部分を元に戻します！</h2></p>
-<img src="{{ url_for('static', filename='images/guide2.gif') }}" width="350">
-<div class="text-container">
-    <h5>使い方のイメ〜ジ(タッチ操作の場合、最初に縮小してね)</h5>
-</div>
 </div>
 <br>
 
 <!-- モード切替ボタンを追加 -->
 <button id="modeButton">スクロールモードへ</button>
+<br>
 <!-- 処理後の画像を表示 -->
 <img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" id="filename">
 
