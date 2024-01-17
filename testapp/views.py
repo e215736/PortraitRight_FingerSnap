@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, send_file
+from flask import render_template, request, redirect, url_for
 from testapp import app
 import numpy as np
 import cv2
@@ -6,7 +6,6 @@ import dlib
 import os
 import time
 import datetime
-import zipfile # zipファイルを作成するためのモジュール
 
 detector = dlib.get_frontal_face_detector()
 
@@ -132,7 +131,7 @@ def rest_process(faces, img, original):
         img[y1:y2, x1:x2] = original[y1:y2, x1:x2]
 
 from ultralytics import YOLO
-model = YOLO(model="yolov8l_100e.pt")
+face_model = YOLO(model="yolov8l_100e.pt")
 def yol(filename, model):
     results = model.predict(source='testapp/static/files/' + filename)
     result = results[0]
@@ -145,6 +144,70 @@ def yol(filename, model):
         body.append(xyxy[3])
         bodys.append(body)
     return bodys
+
+def get_segmented_image(image, coordinates_list):
+    mask = np.zeros_like(image)
+    cv2.drawContours(mask, [coordinates_list.astype(int)], -1, (255, 255, 255), thickness=cv2.FILLED)
+    segmented_image = cv2.bitwise_and(image, mask)
+    return segmented_image
+
+human_model = YOLO(model="yolov8x-seg.pt")
+def bod(filename, model):
+    image = cv2.imread('testapp/static/files/' + filename)
+    height, width, channels = image.shape
+    results = model.predict(source='testapp/static/files/' + filename, classes=[0])
+    copied_image = image.copy()
+    if results[0].masks is not None and len(results[0].masks) > 0:
+        # 検出された人物の座標を保存するリスト
+        coordinates_list = []
+        for j in range(len(results[0].masks)):
+            # 検出された人物の座標を取得
+            coordinates = results[0].masks[j].xy[0]
+            # 座標情報を保存
+            coordinates_list.append(coordinates)
+            # セグメンテーションマスクから画像を生成
+            segmented_image = get_segmented_image(image, coordinates)
+            # 人物領域をぼかす
+            blurred_segment = cv2.blur(segmented_image, (int(width/20), int(height/20)))
+            # ここでマスクの逆を取得
+            mask = np.zeros_like(image)
+            cv2.drawContours(mask, [coordinates.astype(int)], -1, (255, 255, 255), thickness=cv2.FILLED)
+            mask_inv = cv2.bitwise_not(mask)
+            # オリジナル画像にぼかした人物領域を適用
+            background = cv2.bitwise_and(copied_image, mask_inv)
+            final_human_segment = cv2.add(background, blurred_segment)
+            copied_image = final_human_segment.copy()
+    # 生成した画像を保存
+    cv2.imwrite('testapp/static/files/processed_' + filename, copied_image)
+    
+def bac(filename, model):
+    image = cv2.imread('testapp/static/files/' + filename)
+    height, width, channels = image.shape
+    results = model.predict(source='testapp/static/files/' + filename, classes=[0])
+    copied_image = image.copy()
+    # 背景領域をぼかす
+    copied_image = cv2.blur(copied_image, (int(width/20), int(height/20)))
+    if results[0].masks is not None and len(results[0].masks) > 0:
+        # 検出された人物の座標を保存するリスト
+        coordinates_list = []
+        for j in range(len(results[0].masks)):
+            # 検出された人物の座標を取得
+            coordinates = results[0].masks[j].xy[0]
+            # 座標情報を保存
+            coordinates_list.append(coordinates)
+            # セグメンテーションマスクから画像を生成
+            segmented_image = get_segmented_image(image, coordinates)
+            # ここでマスクの逆を取得
+            mask = np.zeros_like(image)
+            cv2.drawContours(mask, [coordinates.astype(int)], -1, (255, 255, 255), thickness=cv2.FILLED)
+            mask_inv = cv2.bitwise_not(mask)
+            # ぼかした背景に人物領域を適用
+            foreground = cv2.bitwise_and(segmented_image, mask)
+            background = cv2.bitwise_and(copied_image, mask_inv)
+            final_human_segment = cv2.add(foreground, background)
+            copied_image = final_human_segment.copy()
+    # 生成した画像を保存
+    cv2.imwrite('testapp/static/files/processed_' + filename, copied_image)
 
 @app.route('/')
 def index():
@@ -166,7 +229,6 @@ def index():
             diff = now - mtime
             # 差分が1時間以上なら画像ファイルを削除
             if diff > datetime.timedelta(hours=1):
-            #if diff > datetime.timedelta(seconds=30):
                 os.remove(filepath)
     return render_template('htmls/index.html', default_stamps=default_stamps)
 
@@ -176,18 +238,28 @@ def upload():
     if len(files) >= 2: # 複数枚の場合
         originals = [] # 処理前の画像ファイル名のリスト
         filenames = [] # 処理後の画像ファイル名のリスト
+        option = request.form.get('option')
+        target2 = request.form.get('target2')
         for file in files: # 各画像ファイルに対してループ
             filename = file.filename
             original = file.filename
             file.save('testapp/static/files/' + filename)
             img = cv2.imread('testapp/static/files/' + filename)
-            option = request.form.get('option')
-            faces = yol(filename, model) # yolov8で顔の検出を行う
             if option == 'mosaic':
+                faces = yol(filename, face_model) # yolov8で顔の検出を行う
                 mosaic_process(faces, img) # モザイク処理を行う
+                cv2.imwrite('testapp/static/files/processed_' + filename, img)
             elif option == 'blur':
-                blur_process(faces, img) # ぼかし処理を行う
+                if target2 == 'body':
+                    bod(filename, human_model)
+                elif target2 == 'background':
+                    bac(filename, human_model)
+                elif target2 == 'face':
+                    faces = yol(filename, face_model) # yolov8で顔の検出を行う
+                    blur_process(faces, img) # ぼかし処理を行う
+                    cv2.imwrite('testapp/static/files/processed_' + filename, img)
             elif option == 'stamp':
+                faces = yol(filename, face_model) # yolov8で顔の検出を行う
                 # フォームからスタンプの画像を取得する
                 stamp_file = request.files['stamp']
                 # 隠しフィールドからデフォルトのスタンプのファイル名を取得する
@@ -208,9 +280,10 @@ def upload():
                     return 'スタンプ用の画像がありません'
                 if stamp.shape[2] == 4:
                     stamp_process(faces, img, stamp, stamp_filename) # スタンプ処理を行う
+                    cv2.imwrite('testapp/static/files/processed_' + filename, img)
                 else:
                     stamp_process2(faces, img, stamp, stamp_filename) # スタンプ処理を行う
-            cv2.imwrite('testapp/static/files/processed_' + filename, img)
+                    cv2.imwrite('testapp/static/files/processed_' + filename, img)
             # 処理前と処理後の画像ファイル名をリストに追加
             originals.append(original)
             filenames.append('processed_'+filename)
@@ -227,9 +300,31 @@ def upload():
         img = cv2.imread('testapp/static/files/' + filename)
         option = request.form.get('option')
         type = request.form.get('type')
+        target = request.form.get('target')
         library = request.form.get('library') # フォームから処理ライブラリの値を取得する
+        library2 = request.form.get('library2')
         if type == 'auto':
-            if library == 'dlib': # dlibの場合
+            if option == 'blur':
+                if target == 'body':
+                    bod(filename, human_model)
+                    return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
+                elif target == 'background':
+                    bac(filename, human_model)
+                    return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
+                elif target == 'face':
+                    if library2 == 'dlib': # dlibの場合
+                        faces0 = detector(img) # dlibで顔の検出を行う
+                        faces = []
+                        for face0 in faces0:
+                            face = []
+                            face.append(face0.left())
+                            face.append(face0.top())
+                            face.append(face0.right())
+                            face.append(face0.bottom())
+                            faces.append(face)
+                    elif library2 == 'yolov8': # yolov8の場合
+                        faces = yol(filename, face_model) # yolov8で顔の検出を行う
+            elif library == 'dlib': # dlibの場合
                 faces0 = detector(img) # dlibで顔の検出を行う
                 faces = []
                 for face0 in faces0:
@@ -240,7 +335,7 @@ def upload():
                     face.append(face0.bottom())
                     faces.append(face)
             elif library == 'yolov8': # yolov8の場合
-                faces = yol(filename, model) # yolov8で顔の検出を行う
+                faces = yol(filename, face_model) # yolov8で顔の検出を行う
         elif type == 'manual':
             if option == 'stamp':
                 # フォームからスタンプの画像を取得する
@@ -381,9 +476,16 @@ def more_manual_process():
     img = cv2.imread('testapp/static/files/' + filename)
     option = request.form.get('option')
     type = request.form.get('type')
+    target = request.form.get('target')
     library = request.form.get('library')
     faces = request.form.get('faces')
     if type == 'auto':
+        if target == 'body':
+            bod(filename, human_model)
+            return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
+        elif target == 'background':
+            bac(filename, human_model)
+            return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
         if library == 'dlib': # dlibの場合
             faces0 = detector(img) # dlibで顔の検出を行う
             faces = []
@@ -395,7 +497,7 @@ def more_manual_process():
                 face.append(face0.bottom())
                 faces.append(face)
         elif library == 'yolov8': # yolov8の場合
-            faces = yol(filename, model) # yolov8で顔の検出を行う
+            faces = yol(filename, face_model) # yolov8で顔の検出を行う
     elif type == 'manual':
         if option == 'stamp':
             # フォームからスタンプの画像を取得する
@@ -447,3 +549,7 @@ def more_manual_process():
             stamp_process2(faces, img, stamp, stamp_filename) # スタンプ処理を行う
     cv2.imwrite('testapp/static/files/processed_' + filename, img)
     return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
+
+@app.route('/intro')
+def intro():
+    return render_template('htmls/intro.html')

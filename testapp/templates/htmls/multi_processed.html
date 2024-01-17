@@ -5,13 +5,26 @@
     <div class="flex">
         <div class="image-container">
             <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+            <script>
+            // ロゴ画像の要素を取得する
+            var backButton = document.getElementById('backButton');
+            // ロゴ画像のクリックイベントにリスナーを登録する
+            backButton.addEventListener('click', function() {
+                var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
+                // ページをリダイレクト
+                window.location.href = returnHTML;
+            });
+            </script>
         </div>
         <div class="text-container">
             <h3>肖像権指パッチン</h3>
         </div>
     </div>
-    <p><h2>画像の加工が完了しました</h2></p>
+    <div class="text-container">
+        <p><h2>画像の加工が完了しました</h2></p>
+    </div>
 </div>
+<br>
 
 <!-- 処理前の画像と処理後の画像を表示 -->
 {% for original, filename in images.items() %}
@@ -54,4 +67,5 @@
       width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
 </div>
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/sample3.js') }}"></script>
 {% endblock %}

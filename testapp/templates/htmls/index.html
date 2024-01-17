@@ -1,53 +1,37 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container"><div class="flex">
-    <div class="image-container">
-        <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+<div class="container">
+    <div class="flex">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+        </div>
+        <div class="text-container">
+            <h2>肖像権指パッチン</h2>
+            <a href='/intro' target="_blank">このサイトでできること</a>
+        </div>
     </div>
     <div class="text-container">
-        <h2>肖像権指パッチン</h2>
-        <a href="https://docs.google.com/document/d/1OEpoBB9DtwWiP6YmjgQovh9EyFBZ-AH8vUmGbsJu34c/edit?usp=sharing">フィードバックしてね</a>
-    </div>
-</div>
-
-<div class="text-container">
-<p ><h2>画像の顔を自動で隠します！</h2></p>
+    <p><h2>画像の顔を自動で隠します！</h2></p>
 </div>
 <br>
 
 <!-- ファイル選択とアップロードのフォーム -->
 <form action="/upload" method="post" enctype="multipart/form-data">
-
-    <h1>❶加工する画像を選択してください</h1>
-    <label class="custom-file-upload">
-        <input type="file" name="image_data" id="image_data" accept="image/*" style="display:none" multiple required onchange="showFileName()" >
-        アップロードする画像を選ぶ
-    </label>
-    <div id="filename" class="filename-display">選択されていません</div>
-    <div id="error_message" class="error_message"></div>
+    <!-- <div class="section"> -->
+    <h1>❶加工する画像をアップロードしてね</h1>
+        <label class="custom-file-upload">
+            <input type="file" name="image_data" id="image_data" accept="image/*" style="display:none" multiple required onchange="showFileName()" >
+            アップロードする画像を選ぶ
+        </label>
+        <div id="filename" class="filename-display">選択されていません</div>
+        <div id="error_message" class="error_message"></div>
+    <!-- </div> -->
     <br>
-    <!-- ラジオボタンで処理を選択 -->
-    <h1>❷加工対象を選択してください。</h1>
-    <input id="face" class="radio-inline__input" type="radio" name="target" value="face" checked="checked"/>
-    <label class="radio-inline__label" for="face">
-        顔のみ
-        <div id="balloonE" class="balloon">全ての顔を対象</div>
-    </label>
-    <input id="body" class="radio-inline__input" type="radio" name="target" value="body"/>
-    <label class="radio-inline__label" for="body">
-        全身
-        <div id="balloonF" class="balloon">全身自動ぼかし</div>
-    </label>
-    <input id="background" class="radio-inline__input" type="radio" name="target" value="background"/>
-    <label class="radio-inline__label" for="background">
-        背景のみ
-        <div id="balloonG" class="balloon">背景自動ぼかし</div>
-    </label>
 
     <!-- ラジオボタンで処理を選択 -->
     <div id="option_form" style="display: show;">
-        <h1>❸顔に適用する処理を選択してください</h1>
+        <h1>❷適用したいエフェクトを選択してね</h1>
         <input id="item-2" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
         <label class="radio-inline__label" for="item-2">
             モザイク
@@ -62,16 +46,16 @@
         </label>
         <!-- スタンプ用の画像を選択するフォームを追加する -->
         <div id="stamp_form" style="display: none;">
-            <h3>スタンプ用の画像ファイルを選択してください</h3>
+            <h3>スタンプ用の画像ファイルを選択してね</h3>
             <label class="custom-file-upload">
                 <input type="file" name="stamp" accept="image/*" style="display:none"
                     onchange="document.getElementById('filename2').textContent = this.files[0].name">
                 スタンプに使いたい画像がある方!押して
             </label>
             <div id="filename2" class="filename-display">選択されていません</div>
-            <h3>または、デフォルトのスタンプをクリックしてください</h3>
+            <h3>または、デフォルトのスタンプをクリックしてね</h3>
             <!-- デフォルトのスタンプを画像として表示する -->
-            <div id="default_stamps">
+            <div id="default_stamps" class="stamp-container">
                 {% for stamp in default_stamps %}
                 <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
                 {% endfor %}
@@ -79,12 +63,13 @@
             <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
             <input type="hidden" name="default_stamp" id="default_stamp">
         </div>
+        <br>
+        <br>
     </div>
-    <br>
 
     <div id="process_form" style="display: show;">
         <!-- ラジオボタンで自動処理と手動処理を選択する -->
-        <h1>❸自動処理と手動処理を選択してください</h1>
+        <h1>❸自動もしくは手動処理を選択してね</h1>
         <div class="option-container">
             <input id="auto" class="radio-inline__input" type="radio" name="type" value="auto" checked="checked"/>
             <label class="radio-inline__label" for="auto">
@@ -99,12 +84,69 @@
                 <div id="balloonB" class="balloon">自分で処理したいところを選択できます</div>
             </label>
         </div>
+        <br>
+        <br>
     </div>
-    <br>
+
+    <div id="target_form" style="display: show;">
+        <!-- ラジオボタンで処理を選択 -->
+        <h1>❹自動処理での加工対象を選択してね</h1>
+        <div class="option-container">
+            <input id="face" class="radio-inline__input" type="radio" name="target" value="face" checked="checked"/>
+            <label class="radio-inline__label" for="face">
+                顔のみ
+                <div id="balloonE" class="balloon">全ての顔を対象</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="body" class="radio-inline__input" type="radio" name="target" value="body"/>
+            <label class="radio-inline__label" for="body">
+                全身
+                <div id="balloonF" class="balloon">全身自動ぼかし</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="background" class="radio-inline__input" type="radio" name="target" value="background"/>
+            <label class="radio-inline__label" for="background">
+                背景のみ
+                <div id="balloonG" class="balloon">背景自動ぼかし</div>
+            </label>
+        </div>
+        <br>
+        <br>
+    </div>
+
+    <div id="target_form2" style="display: none;">
+        <!-- ラジオボタンで処理を選択 -->
+        <h1>❸自動処理での加工対象を選択してね</h1>
+        <div class="option-container">
+            <input id="face2" class="radio-inline__input" type="radio" name="target2" value="face" checked="checked"/>
+            <label class="radio-inline__label" for="face2">
+                顔のみ
+                <div id="balloonE2" class="balloon">全ての顔を対象</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="body2" class="radio-inline__input" type="radio" name="target2" value="body"/>
+            <label class="radio-inline__label" for="body2">
+                全身
+                <div id="balloonF2" class="balloon">全身自動ぼかし</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="background2" class="radio-inline__input" type="radio" name="target2" value="background"/>
+            <label class="radio-inline__label" for="background2">
+                背景のみ
+                <div id="balloonG2" class="balloon">背景自動ぼかし</div>
+            </label>
+        </div>
+        <br>
+        <br>
+    </div>
 
     <div id="library_form" style="display: show;">
         <!-- ラジオボタンでdlibとyolov8を切り替える -->
-        <h1>❹自動処理の処理モードどっちにする？</h1>
+        <h1>❹自動処理の処理モードどれにする？</h1>
         <div class="option-container">
             <input id="dlib" class="radio-inline__input" type="radio" name="library" value="dlib" checked="checked"/>
             <label class="radio-inline__label" for="dlib">
@@ -119,8 +161,30 @@
                 <div id="balloonD" class="balloon" style="display: none;">遅いけど精度が高いよ</div>
             </label>
         </div>
+        <br>
+        <br>
     </div>
-    <br>
+
+    <div id="library_form2" style="display: none;">
+        <!-- ラジオボタンでdlibとyolov8を切り替える -->
+        <h1>❺自動処理の処理モードどれにする？</h1>
+        <div class="option-container">
+            <input id="dlib2" class="radio-inline__input" type="radio" name="library2" value="dlib" checked="checked"/>
+            <label class="radio-inline__label" for="dlib2">
+                速度早め
+                <div id="balloonC2" class="balloon">早いけど加工漏れがあるかも！？</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="yolov82" class="radio-inline__input" type="radio" name="library2" value="yolov8"/>
+            <label class="radio-inline__label" for="yolov82">
+                精度高め
+                <div id="balloonD2" class="balloon" style="display: none;">遅いけど精度が高いよ</div>
+            </label>
+        </div>
+        <br>
+        <br>
+    </div>
     
     <button type="submit" class="button">
         <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">

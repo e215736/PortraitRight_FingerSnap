@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install libgl1-mesa-glx -y
 COPY . .
 
 # Flaskのポートを公開
-EXPOSE 5572
+EXPOSE 572
 
 # サーバーを起動
 CMD ["python3", "server.py"]

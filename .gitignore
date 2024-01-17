@@ -3,8 +3,8 @@
 .DS_Store
 
 #big big yolo models
-yolov8x-pose-p6.pt
 yolov8l_100e.pt
+yolov8x-seg.pt
 
 #all pycache files
 __pycache__/
