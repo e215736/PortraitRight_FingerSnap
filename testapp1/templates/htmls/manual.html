@@ -1,15 +1,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
 <div class="container">
     <div class="flex">
         <div class="image-container">
             <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
         </div>
         <div class="text-container">
-            <h3>肖像権指パッチン</h3>
-            <a href='/intro' target="_blank">このサイトでできること</a>
+            <h2>肖像権指パッチン</h2>
         </div>
     </div>
     <p><h2>手動で画像の顔を隠します！</h2></p>
@@ -21,9 +19,7 @@
 <br>
 
 <!-- モード切替ボタンを追加 -->
-<div class="for-sp">
-    <button id="modeButton" class="mode-btn">スクロールモードへ</button>
-</div>
+<button id="modeButton">スクロールモードへ</button>
 <!-- 手動処理画面で処理したい画像を表示 -->
 <img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" id="filename">
 
@@ -44,15 +40,6 @@
         加工する！
     </button>
 </form>
-
-<div class="for-pc">
-    <span class="close-btn" onclick="closeBox()">×</span>
-    <div class="box2">
-    初めての方へ<br>
-    使い方は<a href='/intro' target="_blank">コチラ</a>
-</div>
-</div>
-
 <br>
 <script src="{{ url_for('static', filename='javascript/manual.js') }}"></script>
 

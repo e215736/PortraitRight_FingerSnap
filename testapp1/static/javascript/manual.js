@@ -1,25 +1,5 @@
 // 手動処理画面で処理したい画像の部分を範囲選択するための変数と関数
 
-// モード切替ボタンの要素を取得する
-var modeButton = document.getElementById("modeButton");
-// 現在のモードを保存する変数（初期値は範囲選択モード）
-var mode = "selection";
-
-// モード切替ボタンがクリックされたときにモードを切り替える関数
-function switchMode() {
-    if (mode === "selection") {
-        // 現在が範囲選択モードの場合、スクロールモードに切り替える
-        mode = "scroll";
-        modeButton.textContent = "範囲選択モードへ";
-        canvas.style.pointerEvents = "none"; // キャンバスのイベントを無効にする
-    } else {
-        // 現在がスクロールモードの場合、範囲選択モードに切り替える
-        mode = "selection";
-        modeButton.textContent = "スクロールモードへ";
-        canvas.style.pointerEvents = "auto"; // キャンバスのイベントを有効にする
-    }
-}
-
 // 画像の要素を取得する
 var original = document.getElementById("filename");
 // 画像の上に重ねるキャンバスを作成する
@@ -183,6 +163,26 @@ function scrollOnDrag(e) {
 window.addEventListener("mousemove", scrollOnDrag);
 
 
+// モード切替ボタンの要素を取得する
+var modeButton = document.getElementById("modeButton");
+// 現在のモードを保存する変数（初期値は範囲選択モード）
+var mode = "selection";
+
+// モード切替ボタンがクリックされたときにモードを切り替える関数
+function switchMode() {
+    if (mode === "selection") {
+        // 現在が範囲選択モードの場合、スクロールモードに切り替える
+        mode = "scroll";
+        modeButton.textContent = "範囲選択モードへ";
+        canvas.style.pointerEvents = "none"; // キャンバスのイベントを無効にする
+    } else {
+        // 現在がスクロールモードの場合、範囲選択モードに切り替える
+        mode = "selection";
+        modeButton.textContent = "スクロールモードへ";
+        canvas.style.pointerEvents = "auto"; // キャンバスのイベントを有効にする
+    }
+}
+
 // モード切替ボタンにクリックイベントのリスナーを登録する
 modeButton.addEventListener("click", switchMode);
 
@@ -283,8 +283,3 @@ function touchscrollOnDrag(e) {
 
 // マウス移動イベントにスクロール関数を追加する
 window.addEventListener("touchmove", touchscrollOnDrag);
-
-function closeBox() {
-    document.querySelector('.box2').style.display = 'none';
-    document.querySelector('.close-btn').style.display = 'none';
-  }

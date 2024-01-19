@@ -1,24 +1,4 @@
-// 手動処理画面で処理したい画像の部分を範囲選択するための変数と関数
-
-// モード切替ボタンの要素を取得する
-var modeButton = document.getElementById("modeButton");
-// 現在のモードを保存する変数（初期値は範囲選択モード）
-var mode = "selection";
-
-// モード切替ボタンがクリックされたときにモードを切り替える関数
-function switchMode() {
-    if (mode === "selection") {
-        // 現在が範囲選択モードの場合、スクロールモードに切り替える
-        mode = "scroll";
-        modeButton.textContent = "範囲選択モードへ";
-        canvas.style.pointerEvents = "none"; // キャンバスのイベントを無効にする
-    } else {
-        // 現在がスクロールモードの場合、範囲選択モードに切り替える
-        mode = "selection";
-        modeButton.textContent = "スクロールモードへ";
-        canvas.style.pointerEvents = "auto"; // キャンバスのイベントを有効にする
-    }
-}
+// 手動でモザイクなどの処理した部分を元に戻す画面で処理したい画像の部分を範囲選択するための変数と関数
 
 // 画像の要素を取得する
 var original = document.getElementById("filename");
@@ -54,7 +34,6 @@ window.onload = function () {
     canvas.style.top = original.offsetTop + "px";
     canvas.style.left = original.offsetLeft + "px";
     canvas.style.cursor = "crosshair";
-    // drawFaces();
 };
 
 // キャンバスにマウスが乗ったときにマウスの座標を更新する関数
@@ -85,19 +64,13 @@ function drag(e) {
     // キャンバスをクリアする
     ctx.clearRect(0, 0, width, height);
     // キャンバスに描画する色と線の太さを設定する
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 6;
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 5;
     // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
-    var x1 = Math.min(Math.max(startX, 0), width - 0.1);
-    var y1 = Math.min(Math.max(startY, 0), height - 0.1);
-    var x2 = Math.min(Math.max(mouseX, 0.1), width);
-    var y2 = Math.min(Math.max(mouseY, 0.1), height);
-    var w = x2 - x1;
-    var h = y2 - y1;
+    var w = mouseX - startX;
+    var h = mouseY - startY;
     // 矩形を描画する
-    ctx.strokeRect(x1, y1, w, h);
-    // 保存されたバウンディングボックスを再描画
-    drawFaces();
+    ctx.strokeRect(startX, startY, w, h);
 }
 
 // キャンバスでマウスを離したときにドラッグ終了時の座標を保存する関数
@@ -107,35 +80,20 @@ function endDrag(e) {
     // マウスの座標を更新する
     updateMousePosition(e);
     // ドラッグ終了時の座標を保存する
-    var x1 = Math.min(Math.max(startX, 0), width - 0.1);
-    var y1 = Math.min(Math.max(startY, 0), height - 0.1);
-    var x2 = Math.min(Math.max(mouseX, 0.1), width);
-    var y2 = Math.min(Math.max(mouseY, 0.1), height);
+    var endX = mouseX;
+    var endY = mouseY;
     // ドラッグ中のフラグを下ろす
     isDragging = false;
     // ドラッグ開始時と終了時の座標から矩形の左上と右下の座標を計算する
-    var minX = Math.min(x1, x2);
-    var minY = Math.min(y1, y2);
-    var maxX = Math.max(x1, x2);
-    var maxY = Math.max(y1, y2);
+    var x1 = Math.min(startX, endX);
+    var y1 = Math.min(startY, endY);
+    var x2 = Math.max(startX, endX);
+    var y2 = Math.max(startY, endY);
     // 矩形の座標を配列に追加する
-    faces.push([minX, minY, maxX, maxY]);
+    faces.push([x1, y1, x2, y2]);
     // 隠しフィールドに配列を文字列に変換してセットする
     var facesInput = document.getElementById("faces");
     facesInput.value = JSON.stringify(faces);
-    ctx.clearRect(0, 0, width, height);
-    // 保存されたバウンディングボックスを再描画
-    drawFaces();
-}
-
-// 保存されたバウンディングボックスを描画する関数
-function drawFaces() {
-    ctx.strokeStyle = "Red";
-    ctx.lineWidth = 6;
-    for (var i = 0; i < faces.length; i++) {
-        var face = faces[i];
-        ctx.strokeRect(face[0], face[1], face[2] - face[0], face[3] - face[1]);
-    }
 }
 
 // キャンバスにマウスイベントのリスナーを登録する
@@ -183,6 +141,26 @@ function scrollOnDrag(e) {
 window.addEventListener("mousemove", scrollOnDrag);
 
 
+// モード切替ボタンの要素を取得する
+var modeButton = document.getElementById("modeButton");
+// 現在のモードを保存する変数（初期値は範囲選択モード）
+var mode = "selection";
+
+// モード切替ボタンがクリックされたときにモードを切り替える関数
+function switchMode() {
+    if (mode === "selection") {
+        // 現在が範囲選択モードの場合、スクロールモードに切り替える
+        mode = "scroll";
+        modeButton.textContent = "範囲選択モードへ";
+        canvas.style.pointerEvents = "none"; // キャンバスのイベントを無効にする
+    } else {
+        // 現在がスクロールモードの場合、範囲選択モードに切り替える
+        mode = "selection";
+        modeButton.textContent = "スクロールモードへ";
+        canvas.style.pointerEvents = "auto"; // キャンバスのイベントを有効にする
+    }
+}
+
 // モード切替ボタンにクリックイベントのリスナーを登録する
 modeButton.addEventListener("click", switchMode);
 
@@ -215,7 +193,7 @@ function touchdrag(e) {
     // キャンバスをクリアする
     ctx.clearRect(0, 0, width, height);
     // キャンバスに描画する色と線の太さを設定する
-    ctx.strokeStyle = "red";
+    ctx.strokeStyle = "blue";
     ctx.lineWidth = 5;
     // ドラッグ開始時の座標と現在の座標から矩形の幅と高さを計算する
     var w = mouseX - startX;
@@ -283,8 +261,3 @@ function touchscrollOnDrag(e) {
 
 // マウス移動イベントにスクロール関数を追加する
 window.addEventListener("touchmove", touchscrollOnDrag);
-
-function closeBox() {
-    document.querySelector('.box2').style.display = 'none';
-    document.querySelector('.close-btn').style.display = 'none';
-  }

@@ -174,8 +174,3 @@ function showFileName() {
     errorMessage.textContent = "";
   }
 }
-
-function closeBox() {
-  document.querySelector('.box2').style.display = 'none';
-  document.querySelector('.close-btn').style.display = 'none';
-}

@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container"><div class="flex">
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='images/newwwheader.png') }}" width="170" id="backButton">
+    </div>
+    <div class="text-container">
+        <h3>肖像権指パッチン</h3>
+    </div>
+</div>
+
+
+<div class="text-container">
+    <p ><h1 >このサイトでできること</h1>
+    <div class="box">
+        <h3><a href="#01">❶自動で写真の顔を隠す！</a></h3>
+        <h3><a href="#02">❷AIの精度がイマイチでも安心！自分で加工を追加できるよ</a></h3>
+        <h3><a href="#03">❸最初から自分で加工したい？できるよ</a></h3>
+        <h3><a href="#04">❹ ❶〜❸までを連続してできるよ</a></h3>
+    </div><br></p>
+</div>
+
+<div class="section">
+    
+    <h3 id="01">❶自動で写真の顔を隠す！</h3></p>
+        タイトル通り、あなたがモザイクやスタンプを配置する必要はありません。<br>
+        AIが自動で顔を認識し、顔を隠します。<br>
+        「自動処理」を選択して、処理モードを選んでください。<br>
+            ここに画像<br>
+
+        <br>
+
+    <h3 id="02">❷AIの精度がイマイチでも安心！自分でさらに加工できるよ</h3></p>
+        ❶の手順で加工してみたけれど、あまりうまくいってないみたい？顔以外にも隠したいところがある？やっぱり加工を外したいところがある？<br>
+        そんな時は、加工後の画面の「さらに加工する」「処理した箇所を元に戻したい」ボタンを押しましょう。<br>
+        追加で加工をかけることができたり、逆に加工を外す事ができます。<br>
+
+        <br>
+
+    <h3 id="03">❸自分で加工したい？できるよ</h3></p>
+        顔以外の場所、例えば写っちゃった車のナンバーとか人の名前とかも隠したい？<br>
+        そんな時は「手動処理」ボタンを選択してみましょう。マウスや指で引っ張ると範囲が指定できるようになっています。<br>
+
+        <br>
+
+
+    <h3 id="04">❹ ❶〜❸までを連続してできるよ</h3></p>
+        AIに加工してもらってからさらに手動で加工をしたり、加工をして後から処理を削ったり、順番のバリエーションは無限大。<br>
+        それから加工は何度でも繰り返せるから試行錯誤しながら進めることも可能です。<br>
+
+        <br>
+    
+    <h3>肖像権指パッチンとは</h3></p>
+        SNSに写真をアップするとき、知らない人の顔まで写っちゃうことはありませんか？<br>
+        知らない人をちゃんと隠して載せたいけどいちいち加工するの面倒くさくないですか！？<br>
+        そんな時にぜひ使ってほしいのがこの肖像権指パッチンです。<br>
+        現役大学生Presentsの最強顔隠しアプリです。よろしくお願いします。<br>
+        レビューもお待ちしております。↓↓↓
+</div>
+
+    </div>
+    <br>
+
+</div>
+<div class="GoogleForm">
+    <iframe
+      src="https://forms.gle/obtcKXzo9Jvd2Rfw7"
+      width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
+</div>
+
+<script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
+{% endblock %}

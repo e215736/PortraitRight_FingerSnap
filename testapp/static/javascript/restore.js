@@ -261,3 +261,8 @@ function touchscrollOnDrag(e) {
 
 // マウス移動イベントにスクロール関数を追加する
 window.addEventListener("touchmove", touchscrollOnDrag);
+
+function closeBox() {
+    document.querySelector('.box2').style.display = 'none';
+    document.querySelector('.close-btn').style.display = 'none';
+  }
