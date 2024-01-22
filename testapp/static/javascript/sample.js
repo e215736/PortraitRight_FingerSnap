@@ -230,11 +230,42 @@ for (var i = 0; i < stamps.length; i++) {
   stamps[i].addEventListener("click", selectStamp);
 }
 
+// スタンプの要素を取得する
+var stamp = document.querySelector("input[name=stamp]");
+// ラジオボタンの要素を取得する
+var radio = document.querySelectorAll("input[name=option]");
+// ラジオボタンの変更イベントにリスナーを登録する
+radio.forEach(function(r) {
+r.addEventListener("change", function() {
+  // スタンプが選択された場合はrequired属性を付ける
+  if (r.value == "stamp") {
+    stamp.required = true;
+  } else {
+    // それ以外の場合はrequired属性を外す
+    stamp.required = false;
+  }
+});
+});
+
+// デフォルトスタンプの画像要素を取得する
+var default_stamps = document.querySelectorAll(".default_stamp");
+// デフォルトスタンプのクリックイベントにリスナーを登録する
+default_stamps.forEach(function(ds) {
+ds.addEventListener("click", function() {
+  // クリックされたデフォルトスタンプのファイル名を取得する
+  var stamp_name = ds.alt;
+  // 隠しフィールドにファイル名をセットする
+  default_stamps.value = stamp_name;
+  // スタンプのrequired属性を外す
+  stamp.required = false;
+});
+});
+
 // ロゴ画像の要素を取得する
 var backButton = document.getElementById('backButton');
 // ロゴ画像のクリックイベントにリスナーを登録する
 backButton.addEventListener('click', function() {
-    var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
+    var returnHTML = 'https://finger-snap.st.ie.u-ryukyu.ac.jp/';
     // ページをリダイレクト
     window.location.href = returnHTML;
 });
@@ -285,4 +316,9 @@ function showFileName() {
     fileName.textContent = fileNames;
     errorMessage.textContent = "";
   }
+}
+
+function closeBox() {
+  document.querySelector('.box2').style.display = 'none';
+  document.querySelector('.close-btn').style.display = 'none';
 }

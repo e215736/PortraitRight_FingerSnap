@@ -4,7 +4,7 @@
 <div class="container">
     <div class="flex">
         <div class="image-container">
-            <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+            <img src="{{ url_for('static', filename='images/newheader.png') }}" width="170" id="backButton">
         </div>
         <div class="text-container">
             <h2>肖像権指パッチン</h2>
@@ -15,7 +15,6 @@
     <p><h2>画像の顔を自動で隠します！</h2></p>
 </div>
 <br>
-
 <!-- ファイル選択とアップロードのフォーム -->
 <form action="/upload" method="post" enctype="multipart/form-data">
     <!-- <div class="section"> -->
@@ -54,11 +53,19 @@
             </label>
             <div id="filename2" class="filename-display">選択されていません</div>
             <h3>または、デフォルトのスタンプをクリックしてね</h3>
-            <!-- デフォルトのスタンプを画像として表示する -->
-            <div id="default_stamps" class="stamp-container">
-                {% for stamp in default_stamps %}
-                <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
-                {% endfor %}
+            <!-- デフォルトのスタンプを画像として表示する -->            <div class="for-pc">
+                <div id="default_stamps" class="stamp-container">
+                    {% for stamp in default_stamps %}
+                    <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="for-sp">
+                <div id="default_stamps">
+                    {% for stamp in default_stamps %}
+                    <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
+                    {% endfor %}
+                </div>
             </div>
             <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
             <input type="hidden" name="default_stamp" id="default_stamp">
@@ -186,13 +193,21 @@
         <br>
     </div>
     
-    <button type="submit" class="button">
+    <button type="submit" class="button_kako">
         <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
         加工する！
     </button>
 
 </form>
 <br>
+
+<div class="for-pc">
+        <span class="close-btn" onclick="closeBox()">×</span>
+        <div class="box2">
+        初めての方へ<br>
+        使い方は<a href='/intro' target="_blank">コチラ</a>
+    </div>
+</div>
 
 <div class="GoogleForm">
     <iframe

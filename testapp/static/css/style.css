@@ -36,6 +36,8 @@ body {
     margin: 2rem auto 0;
     line-height: 1.6;
     color: #444;
+    background-color: #EEFFFF;
+    /* background-color: #FFFEEE; */
 }
 
 p {
@@ -48,15 +50,8 @@ p {
     clip: rect(1px, 1px, 1px, 1px);
     position: absolute !important;
 }
-
-.section {
-    text-align: left;
-    margin: auto;
-    position: relative;
-    left: 40px;
-}
   
-.radio-inline__label {
+/* .radio-inline__label {
     display: inline-block;
     padding: 1.5rem 2rem;
     margin-right: 18px;
@@ -65,15 +60,28 @@ p {
     font-size: 19pt;
     position: relative;
     font-family:"Hiragino Maru Gothic Pro W4";
+} */
+
+.radio-inline__label {
+    display: inline-block;
+    text-align: center;
+    padding: 1.5rem 2rem;
+    margin-right: 30px;
+    border-radius: 3px;
+    transition: all .2s;
+    font-size: 19pt;
+    position: relative;
+    font-family:"Hiragino Maru Gothic Pro W4";
 }
 
 .radio-inline__label:hover {
-    background    : #FFEE88;     /* 背景色     */
-    /* background    : #8ae6e1;     背景色     */
+    /* background    : #FFEE88;     背景色     */
+    background    : #AABBFF;     /* 背景色     */
 }
   
 .radio-inline__input:checked + .radio-inline__label {
-      background: #FFCC00;
+      /* background: #FFCC00; */
+      background: #0c409b;
       color: white;  
       position: relative;
 }
@@ -87,16 +95,17 @@ p {
 .button {
     display       : inline-block;
     border-radius : 5%;          /* 角丸       */
-    font-size     : 22pt;        /* 文字サイズ */
+    /* font-size     : 22pt;        文字サイズ */
+    font-size     : 15pt;        /* 文字サイズ */
     text-align    : center;      /* 文字位置   */
     cursor        : pointer;     /* カーソル   */
     padding       : 12px 12px;   /* 余白       */
     background    : white;     /* 背景色     */
-    /* color         : #2cb4ad;     文字色     */
-    color         : #ffc800;     /* 文字色     */
+    color         : #0c409b;     /* 文字色     */
+    /* color         : #ffc800;     文字色     */
     line-height   : 2em;         /* 1行の高さ  */
     transition    : .3s;         /* なめらか変化 */
-    border        : 4px solid #ffc800;    /* 枠の指定 */
+    border        : 4px solid #0c409b;    /* 枠の指定 */
     /* border        : 4px solid #2cb4ad;    枠の指定 */
     text-decoration: none;
     font-weight:bold;
@@ -106,7 +115,65 @@ p {
 .button:hover {
     box-shadow    : none;        /* カーソル時の影消去 */
     color         : white;     /* 背景色     */
-    background    : #FFCC00;     /* 文字色     */
+    background    : #0c409b;     /* 文字色     */
+    /* background    : #2cb4ad;     文字色     */
+    text-decoration: none;
+    font-weight:bold;
+}
+
+.button2 {
+    display       : inline-block;
+    border-radius : 5%;          /* 角丸       */
+    /* font-size     : 22pt;        文字サイズ */
+    font-size     : 22pt;        /* 文字サイズ */
+    text-align    : center;      /* 文字位置   */
+    cursor        : pointer;     /* カーソル   */
+    padding       : 12px 12px;   /* 余白       */
+    background    : white;     /* 背景色     */
+    color         : #0c409b;     /* 文字色     */
+    /* color         : #ffc800;     文字色     */
+    line-height   : 2em;         /* 1行の高さ  */
+    transition    : .3s;         /* なめらか変化 */
+    border        : 4px solid #0c409b;    /* 枠の指定 */
+    /* border        : 4px solid #2cb4ad;    枠の指定 */
+    text-decoration: none;
+    font-weight:bold;
+    font-family:"Hiragino Maru Gothic Pro W4"
+}
+
+.button2:hover {
+    box-shadow    : none;        /* カーソル時の影消去 */
+    color         : white;     /* 背景色     */
+    background    : #0c409b;     /* 文字色     */
+    /* background    : #2cb4ad;     文字色     */
+    text-decoration: none;
+    font-weight:bold;
+}
+
+.button_kako {
+    display       : inline-block;
+    border-radius : 5%;          /* 角丸       */
+    /* font-size     : 22pt;        文字サイズ */
+    font-size     : 22pt;        /* 文字サイズ */
+    text-align    : center;      /* 文字位置   */
+    cursor        : pointer;     /* カーソル   */
+    padding       : 12px 12px;   /* 余白       */
+    background    : white;     /* 背景色     */
+    color         : #0c409b;     /* 文字色     */
+    /* color         : #ffc800;     文字色     */
+    line-height   : 2em;         /* 1行の高さ  */
+    transition    : .3s;         /* なめらか変化 */
+    border        : 4px solid #0c409b;    /* 枠の指定 */
+    /* border        : 4px solid #2cb4ad;    枠の指定 */
+    text-decoration: none;
+    font-weight:bold;
+    font-family:"Hiragino Maru Gothic Pro W4"
+}
+
+.button_kako:hover {
+    box-shadow    : none;        /* カーソル時の影消去 */
+    color         : white;     /* 背景色     */
+    background    : #0c409b;     /* 文字色     */
     /* background    : #2cb4ad;     文字色     */
     text-decoration: none;
     font-weight:bold;
@@ -120,7 +187,8 @@ p {
 .default_stamp:hover {
     height: 100px;
     width: auto;
-    background    : #FFEE88;     /* 背景色     */
+    background    : #CCFFFF;     /* 背景色     */
+    /* background    : #FFEE88;     背景色     */
     /* background    : #8ae6e1;     背景色     */
 }
 
@@ -129,7 +197,7 @@ p {
     display: none;
     width: auto;
     height: auto;
-    background-color: #ffea94;
+    background-color: #88b9ff;
     /* background-color: #8ae6e1; */
     border-radius: 12px;
     padding: 20px;
@@ -147,7 +215,7 @@ p {
     left: 50%; /* 矢印の位置を吹き出しの左端から20%の位置に設定 */
     margin-left: -15px;
     border: 15px solid transparent;
-    border-bottom: 15px solid #ffea94; /* 下向きの矢印を作成 */
+    border-bottom: 15px solid #88b9ff; /* 下向きの矢印を作成 */
     /* border-bottom: 15px solid #8ae6e1; 下向きの矢印を作成 */
 }
 
@@ -171,8 +239,9 @@ p {
 }
   
 .custom-file-upload:hover {
+    border: 1px solid #0c409b;
     color         : #FFFFFF;     /* 文字色     */
-    background-color: #FFCC00; /* カーソルが上にある時の背景色 */
+    background-color: #0c409b; /* カーソルが上にある時の背景色 */
     /* background-color: #2cb4ad; カーソルが上にある時の背景色 */
     position: relative;
 }
@@ -192,6 +261,139 @@ p {
     margin: 0 auto;
 }
 
-body {
-    background-color: #FFFEEE;
+.mode-btn {
+    position: fixed;
+    top: 5%;
+    right: 5%;
+    width: auto;
+    height: auto;
+    border: 3px solid #0c409b;
+    padding: 20px;
+    margin: 15px;
+    color:#0c409b;
+    font-weight: bold;
+    font-size: 22px;
+    background:  white;
+    border-radius: 47%;
+    text-align: center;
+    font-family:"Hiragino Maru Gothic Pro W4";
+    transition: all 0.5s;
+    z-index: 5 ;
+}
+
+.mode-btn:hover {
+    color         : white;
+    background    : #0c409b;  
+    font-weight:bold;
+    z-index: 5 ;
+}
+
+/*使い方ページ用*/
+.box {
+    background:#b3eeff; /*境界線の指定*/
+    padding:10px;
+    text-align    : left;
+    padding       : 36px;
+}
+
+.box a {
+    text-decoration:none;
+    color :black;
+}
+
+.box :hover {
+    color :#1a1aff;
+}
+
+.img {
+    position: fixed;
+    bottom: 10%;
+    right: 5%;
+    border-radius: 50%;  /* 角丸半径を50%にする(=円形にする) */
+    width:  180px;       /* ※縦横を同値に */
+    height: 180px;       /* ※縦横を同値に */
+}
+
+
+header {
+    display: flex;
+    width: 100%;
+    height: 120px;
+    color: white;
+    background-color: #0c409b;
+    align-items: center;
+    font-family:"Hiragino Maru Gothic Pro W4";
+  }
+   
+  .title {
+    margin-right: auto;
+  }
+   
+  .menu-item {
+    list-style: none;
+    display: inline-block;
+    padding: 10px;
+  }
+
+
+.section {
+    text-align: left;
+    margin: auto;
+    position: relative;
+    left: 40px;
+}
+
+.for-pc { 
+    display:block; }
+.for-sp { display:none; }
+
+@media only screen and (max-width : 1400px){
+  .for-pc { display:none; }
+  .for-sp { display:block; }
+  .for-sp .section {
+    display: none;
+}
+}
+
+.box2 {
+    position: fixed;
+    top: 5%;
+    right: 5%;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    background: #b3eeff;
+    padding: 10px;
+    text-align: left;
+    padding: 36px;
+    font-family:"Hiragino Maru Gothic Pro W4";
+
+}
+
+.box2 a {
+    text-decoration: none;
+    color: black;
+}
+
+.box2 :hover {
+    color: #1a1aff;
+    text-decoration: underline;
+}
+
+/* 追加：クローズボタンのスタイル */
+.close-btn {
+    position:fixed;
+    color:white;
+    top: 35px;
+    right: 60px;
+    width: 30px; /* ボタンの幅 */
+    height: 30px; /* ボタンの高さ */
+    background-color: #0c409b; /* ボタンの背景色 */
+    border-radius: 50%; /* 丸い形状 */
+    font-size: 2em; /* バツのサイズ */
+    color: white; /* バツの色 */
+    text-align: center;
+    line-height: 30px; /* バツの位置調整 */
+    cursor: pointer;
+    z-index: 5 ;
 }
