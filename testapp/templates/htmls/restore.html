@@ -4,10 +4,11 @@
 <div class="container">
     <div class="flex">
         <div class="image-container">
-            <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+            <img src="{{ url_for('static', filename='images/newheader.png') }}" width="170" id="backButton">
         </div>
         <div class="text-container">
             <h2>肖像権指パッチン</h2>
+            <a href='/intro' target="_blank">このサイトでできること</a>
         </div>
     </div>
     <p><h2>手動でモザイクなどの処理した部分を元に戻します！</h2></p>
@@ -19,8 +20,10 @@
 <br>
 
 <!-- モード切替ボタンを追加 -->
-<button id="modeButton">スクロールモードへ</button>
-<br>
+<div class="for-sp">
+    <button id="modeButton" class="mode-btn">スクロールモードへ</button>
+</div>
+
 <!-- 処理後の画像を表示 -->
 <img src="{{ url_for('static', filename='files/' + filename) }}" alt="filename" id="filename">
 
@@ -33,13 +36,20 @@
     <!-- 隠しフィールドで範囲の座標のリストを送信 -->
     <input type="hidden" name="faces" id="faces">
     <br>
-    <br>
-    <button type="submit" class="button">
+    <button type="submit" class="button_kako">
         <img src="{{ url_for('static', filename='images/SVGs/eraser-fill.svg') }}" alt="restore" class="svg-icon" style="width: 1em; height: 1em;">
         加工を戻す！
     </button>
 </form>
 <br>
+
+<div class="for-pc">
+    <span class="close-btn" onclick="closeBox()">×</span>
+    <div class="box2">
+    初めての方へ<br>
+    使い方は<a href='/intro' target="_blank">コチラ</a>
+</div>
+
 <script src="{{ url_for('static', filename='javascript/restore.js') }}"></script>
 
 {% endblock %}
