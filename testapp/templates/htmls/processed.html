@@ -4,13 +4,13 @@
 <div class="container">
     <div class="flex">
         <div class="image-container">
-            <img src="{{ url_for('static', filename='images/logo1.png') }}" width="170" id="backButton">
+            <img src="{{ url_for('static', filename='images/newheader.png') }}" width="170" id="backButton">
             <script>
             // ロゴ画像の要素を取得する
             var backButton = document.getElementById('backButton');
             // ロゴ画像のクリックイベントにリスナーを登録する
             backButton.addEventListener('click', function() {
-                var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
+                var returnHTML = 'https://finger-snap.st.ie.u-ryukyu.ac.jp/';
                 // ページをリダイレクト
                 window.location.href = returnHTML;
             });
@@ -18,6 +18,7 @@
         </div>
         <div class="text-container">
             <h3>肖像権指パッチン</h3>
+            <a href='/intro' target="_blank">このサイトの使い方</a>
         </div>
     </div>
     <div class="text-container">
@@ -44,37 +45,73 @@
 </div>
 <br>
 
-<div class="button.btn ">
-    <div class="container">
-        <!-- 手動でモザイクなどの処理した部分を元に戻すボタンを追加 -->
-        <form action="/restore" method="get">
-            <!-- 隠しフィールドでファイル名とオプションを送信 -->
-            <input type="hidden" name="original" value="{{ original }}">
-            <input type="hidden" name="processed" value="{{ processed }}">
-            <button type="submit" class="button">
-                <img src="{{ url_for('static', filename='images/SVGs/eraser-fill.svg') }}" alt="restore" class="svg-icon" style="width: 1em; height: 1em;">
-                好きなように処理を消す
-            </button>
-        </form>
-        <!-- さらに加工するボタンを追加 -->
-        <form action="/more_manual" method="get">
-            <!-- 隠しフィールドでファイル名とオプションを送信 -->
-            <input type="hidden" name="original" value="{{ original }}">
-            <input type="hidden" name="processed" value="{{ processed }}">
-            <button type="submit" class="button">
-                <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
-                も〜っと加工したい
-            </button>
-        </form>
-        <form action="/" method="get">
-            <button type="submit" class="button">
-                <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
-                新しく画像を加工する！
-            </button>
-        </form>
+<div class="for-pc">
+    <div class="button.btn ">
+        <div class="container">
+            <!-- 手動でモザイクなどの処理した部分を元に戻すボタンを追加 -->
+            <form action="/restore" method="get">
+                <!-- 隠しフィールドでファイル名とオプションを送信 -->
+                <input type="hidden" name="original" value="{{ original }}">
+                <input type="hidden" name="processed" value="{{ processed }}">
+                <button type="submit" class="button2">
+                    <img src="{{ url_for('static', filename='images/SVGs/eraser-fill.svg') }}" alt="restore" class="svg-icon" style="width: 1em; height: 1em;">
+                    好きなように処理を消す
+                </button>
+            </form>
+            <!-- さらに加工するボタンを追加 -->
+            <form action="/more_manual" method="get">
+                <!-- 隠しフィールドでファイル名とオプションを送信 -->
+                <input type="hidden" name="original" value="{{ original }}">
+                <input type="hidden" name="processed" value="{{ processed }}">
+                <button type="submit" class="button2">
+                    <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
+                    も〜〜〜っと加工したい
+                </button>
+            </form>
+            <form action="/" method="get">
+                <button type="submit" class="button2">
+                    <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
+                    新しく画像を加工する！
+                </button>
+            </form>
+        </div>
     </div>
+    <br>
 </div>
-<br>
+
+<div class="for-sp">
+    <div class="button.btn ">
+        <div class="container">
+            <!-- 手動でモザイクなどの処理した部分を元に戻すボタンを追加 -->
+            <form action="/restore" method="get">
+                <!-- 隠しフィールドでファイル名とオプションを送信 -->
+                <input type="hidden" name="original" value="{{ original }}">
+                <input type="hidden" name="processed" value="{{ processed }}">
+                <button type="submit" class="button">
+                    <img src="{{ url_for('static', filename='images/SVGs/eraser-fill.svg') }}" alt="restore" class="svg-icon" style="width: 1em; height: 1em;">
+                    好きなように処理を消す
+                </button>
+            </form>
+            <!-- さらに加工するボタンを追加 -->
+            <form action="/more_manual" method="get">
+                <!-- 隠しフィールドでファイル名とオプションを送信 -->
+                <input type="hidden" name="original" value="{{ original }}">
+                <input type="hidden" name="processed" value="{{ processed }}">
+                <button type="submit" class="button">
+                    <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
+                    も〜〜〜っと加工したい
+                </button>
+            </form>
+            <form action="/" method="get">
+                <button type="submit" class="button">
+                    <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
+                    新しく画像を加工する！
+                </button>
+            </form>
+        </div>
+    </div>
+    <br>
+</div>
 
 <a href="https://docs.google.com/document/d/1OEpoBB9DtwWiP6YmjgQovh9EyFBZ-AH8vUmGbsJu34c/edit?usp=sharing">時間短めレビューの先はこちら</a>
 
@@ -84,5 +121,4 @@
       width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
 </div>
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
-<script src="{{ url_for('static', filename='javascript/sample2.js') }}"></script>
 {% endblock %}

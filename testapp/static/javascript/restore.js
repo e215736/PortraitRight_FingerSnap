@@ -122,7 +122,7 @@ canvas.addEventListener("mouseout", endDrag);
 var backButton = document.getElementById('backButton');
 // ロゴ画像のクリックイベントにリスナーを登録する
 backButton.addEventListener('click', function() {
-    var returnHTML = 'http://finger-snap.st.ie.u-ryukyu.ac.jp/';
+    var returnHTML = 'https://finger-snap.st.ie.u-ryukyu.ac.jp/';
     // ページをリダイレクト
     window.location.href = returnHTML;
 });
@@ -284,3 +284,8 @@ function touchscrollOnDrag(e) {
 
 // マウス移動イベントにスクロール関数を追加する
 window.addEventListener("touchmove", touchscrollOnDrag);
+
+function closeBox() {
+    document.querySelector('.box2').style.display = 'none';
+    document.querySelector('.close-btn').style.display = 'none';
+}

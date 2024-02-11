@@ -1,51 +1,214 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
+<style>
+h3 {
+  background: #b3eeff;
+  box-shadow: 0px 0px 0px 5px #b3eeff;
+  border: dashed 2px white;
+  padding: 0.2em 0.5em;
+}
+</style>
+
 <div class="container"><div class="flex">
     <div class="image-container">
-        <img src="{{ url_for('static', filename='images/newwwheader.png') }}" width="170" id="backButton">
+        <img src="{{ url_for('static', filename='images/newheader.png') }}" width="170" id="backButton">
+        <script>
+            // ロゴ画像の要素を取得する
+            var backButton = document.getElementById('backButton');
+            // ロゴ画像のクリックイベントにリスナーを登録する
+            backButton.addEventListener('click', function() {
+                var returnHTML = 'https://finger-snap.st.ie.u-ryukyu.ac.jp/';
+                // ページをリダイレクト
+                window.location.href = returnHTML;
+            });
+            </script>
     </div>
     <div class="text-container">
-        <h3>肖像権指パッチン</h3>
+        <h4>肖像権指パッチン</h4>
     </div>
 </div>
 
 
 <div class="text-container">
-    <p ><h1 >このサイトでできること</h1>
+    <p ><h1 >このサイトの使い方</h1>
     <div class="box">
-        <h3><a href="#01">❶自動で写真の顔を隠す！</a></h3>
-        <h3><a href="#02">❷AIの精度がイマイチでも安心！自分で加工を追加できるよ</a></h3>
-        <h3><a href="#03">❸最初から自分で加工したい？できるよ</a></h3>
-        <h3><a href="#04">❹ ❶〜❸までを連続してできるよ</a></h3>
+        <h3><a href="#01">その1：自動で写真の顔を隠す！</a></h3>
+        <h3><a href="#02">その2：AIの精度がイマイチでも安心！自分で加工を追加できるよ</a></h3>
+        <h3><a href="#03">その3：最初から自分で加工したい？できるよ</a></h3>
+        <h3><a href="#04">その4：隠しコマンド「自動処理での加工対象」</a></h3>
+        <h3><a href="#05">その5：組み合わせ自由！</a></h3>
     </div><br></p>
 </div>
 
 <div class="section">
     
-    <h3 id="01">❶自動で写真の顔を隠す！</h3></p>
+    <h3 id="01">❶その1：自動で写真の顔を隠す！</h3></p>
         タイトル通り、あなたがモザイクやスタンプを配置する必要はありません。<br>
         AIが自動で顔を認識し、顔を隠します。<br>
-        「自動処理」を選択して、処理モードを選んでください。<br>
-            ここに画像<br>
+
+        まずは番号に従って、❶で加工したい画像を選択してください。<br>
+        ❷で「モザイク」「ぼかし」「スタンプ」のいずれかを選択し、❸で「自動処理」を選択しましょう。<br>
+        スタンプは自分の好きな画像を使うこともできますし、
+        デフォルトのスタンプを使うこともできます。
+        <br>
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_1.png') }}" width="600">
+        </div>
+
+        <br>
+        次は❹で処理モードを聞かれるので、お好みで選んでください。おすすめは精度の良い右のボタンです。
+        <br>
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_2.png') }}" width="600">
+        </div>
 
         <br>
 
-    <h3 id="02">❷AIの精度がイマイチでも安心！自分でさらに加工できるよ</h3></p>
-        ❶の手順で加工してみたけれど、あまりうまくいってないみたい？顔以外にも隠したいところがある？やっぱり加工を外したいところがある？<br>
+
+        モードを選択したら、「加工する！」ボタンを押してレッツ加工
+        <br>
+
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_3.png') }}" width="700">
+        </div>
+        <br>
+
+        上図ではモザイクをかけています。ぼかしとスタンプもぜひ試してみて下さい。<br>
+        慣れてきたら、今度は複数枚同時に加工してみましょう。❶で10枚まで同時に選択できます。
+        <br>
+        <br>
+
+    <h3 id="02">❷その2：AIの精度がイマイチでも安心！自分でさらに加工できるよ</h3></p>
+        その1手順で加工してみたけれど、あまりうまくいってないみたい？顔以外にも隠したいところがある？やっぱり加工を外したいところがある？<br>
         そんな時は、加工後の画面の「さらに加工する」「処理した箇所を元に戻したい」ボタンを押しましょう。<br>
         追加で加工をかけることができたり、逆に加工を外す事ができます。<br>
-
         <br>
 
-    <h3 id="03">❸自分で加工したい？できるよ</h3></p>
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_4.png') }}" width="700">
+        </div>
+        <br>
+        今回は試しにモザイクを追加してみましょう。「も〜っと追加する」ボタンを押します。
+        <br>
+
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_5.png') }}" width="700">
+        </div>
+        <br>
+        ここで自動処理を選択すると、1番最初にやった処理と同じことをしてしまいますので注意です。<br>
+        今回は手動処理を重ねてやってみましょう。<br>
+
+        上の方に使い方のイメージ図があるので、それを参考に、マウス・指を引っ張ってみましょう。
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_6.png') }}" width="700">
+        </div>
+        <br>
+
+        好きなところに四角が描けたら、「加工する！」ボタンを押してレッツ加工
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_7.png') }}" width="700">
+        </div>
+        <br>
+
+
+
+
+        今回行った処理は、自動処理→手動処理の順でしたが、もちろん最初から手動処理を選択することも可能です。<br>
+        ❷で「手動処理」を選択して下さい。<br>
+        もしモザイクをかけすぎた・・・消したい・・・ということがあれば、今度は「処理した箇所を元に戻したい」ボタンを押しましょう。<br>
+        モザイクやぼかし、スタンプを消すことができます。
+
+        <br>
+        <br>
+
+    <h3 id="03">その3：最初から自分で加工したい？できるよ</h3></p>
         顔以外の場所、例えば写っちゃった車のナンバーとか人の名前とかも隠したい？<br>
-        そんな時は「手動処理」ボタンを選択してみましょう。マウスや指で引っ張ると範囲が指定できるようになっています。<br>
+        そんな時は❷で「手動処理」ボタンを選択してみましょう。<br>
+        その2で加工を追加したように、マウスや指で引っ張ると範囲が指定できるようになっています。<br>
+        今回はぼかしをやってみましょう。
 
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_8.png') }}" width="700">
+        </div>
         <br>
 
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_9.png') }}" width="700">
+        </div>
+        <br>
 
-    <h3 id="04">❹ ❶〜❸までを連続してできるよ</h3></p>
+        好きなところに四角が描けたら、「加工する！」ボタンを押してレッツ加工
+        <br>
+
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_10.png') }}" width="700">
+        </div>
+        <br>
+
+        ではここで、下にある「好きなように処理を消す」ボタンを押してみましょう。<br>
+        これで、やっぱり消したいとなった処理を消すことができます。<br>
+        すると、再び先ほどと似たような画面が出てきます。これも上のガイドに従って、処理を消したいところに四角を描きましょう。
+        <br>
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_11.png') }}" width="700">
+        </div>
+        <br>
+
+        好きなところに四角が描けたら、「加工を戻す！」ボタンを押してレッツ加工
+        <br>
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_12.png') }}" width="700">
+        </div>
+        <br>
+
+        今回は手動処理→加工除去でやりましたが、もちろん自動処理→加工除去も可能です。<br>
+        組み合わせは無限大です。
+        <br>
+        <br>
+
+    <h3 id="04">その4：隠しコマンド「自動処理での加工対象」</h3></p>
+        さて、実は、ぼかし→自動処理→を選択すると、幻の❹、「自動処理での加工対象」が出てきます。<br>
+        早速試してみましょう。
+        <div class="flex">
+        <br>
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_13.png') }}" width="400">
+        </div>
+        <br>
+        <br>
+        <div class="ontainer">
+            <img src="{{ url_for('static', filename='intro_images/intro_14.png') }}" width="400">
+        </div>
+        </div>
+        <br>
+        結果はというと・・・
+        <div class="flex">
+            <br>
+            <div class="ontainer">
+                <img src="{{ url_for('static', filename='intro_images/intro_15.png') }}" width="440">
+            </div>
+            <br>
+            <br>
+            <div class="ontainer">
+                <img src="{{ url_for('static', filename='intro_images/intro_16.png') }}" width="440">
+            </div>
+            </div>
+            <br>
+
+            「全身」を選択すると人がぼかされます。「背景のみ」を選択すると背景がぼかされます。<br>
+
+            <h4>正直、めっちゃおもろい</h4>
+            <br>みなさんもぜひ使ってみて下さい。
+
+            <br>
+            <br>
+
+    
+
+
+    <h3 id="05">その5：その1〜4までを連続して何回でもできるよ</h3></p>
         AIに加工してもらってからさらに手動で加工をしたり、加工をして後から処理を削ったり、順番のバリエーションは無限大。<br>
         それから加工は何度でも繰り返せるから試行錯誤しながら進めることも可能です。<br>
 
@@ -56,6 +219,7 @@
         知らない人をちゃんと隠して載せたいけどいちいち加工するの面倒くさくないですか！？<br>
         そんな時にぜひ使ってほしいのがこの肖像権指パッチンです。<br>
         現役大学生Presentsの最強顔隠しアプリです。よろしくお願いします。<br>
+        ここまでお読みいただきありがとうございました。<br>
         レビューもお待ちしております。↓↓↓
 </div>
 
@@ -68,6 +232,10 @@
       src="https://forms.gle/obtcKXzo9Jvd2Rfw7"
       width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
 </div>
+
+<a href="/"><div class="return-btn">
+    サイトTOPへ
+</div></a>
 
 <script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
 {% endblock %}

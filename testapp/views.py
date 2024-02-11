@@ -2,12 +2,9 @@ from flask import render_template, request, redirect, url_for
 from testapp import app
 import numpy as np
 import cv2
-import dlib
 import os
 import time
 import datetime
-
-detector = dlib.get_frontal_face_detector()
 
 # デフォルトのスタンプのファイル名のリストを作成する
 # (デフォルトスタンプを追加・変更・削除する場合サーバを再度立ち上げる)
@@ -301,8 +298,6 @@ def upload():
         option = request.form.get('option')
         type = request.form.get('type')
         target = request.form.get('target')
-        library = request.form.get('library') # フォームから処理ライブラリの値を取得する
-        library2 = request.form.get('library2')
         if type == 'auto':
             if option == 'blur':
                 if target == 'body':
@@ -311,31 +306,8 @@ def upload():
                 elif target == 'background':
                     bac(filename, human_model)
                     return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
-                elif target == 'face':
-                    if library2 == 'dlib': # dlibの場合
-                        faces0 = detector(img) # dlibで顔の検出を行う
-                        faces = []
-                        for face0 in faces0:
-                            face = []
-                            face.append(face0.left())
-                            face.append(face0.top())
-                            face.append(face0.right())
-                            face.append(face0.bottom())
-                            faces.append(face)
-                    elif library2 == 'yolov8': # yolov8の場合
-                        faces = yol(filename, face_model) # yolov8で顔の検出を行う
-            elif library == 'dlib': # dlibの場合
-                faces0 = detector(img) # dlibで顔の検出を行う
-                faces = []
-                for face0 in faces0:
-                    face = []
-                    face.append(face0.left())
-                    face.append(face0.top())
-                    face.append(face0.right())
-                    face.append(face0.bottom())
-                    faces.append(face)
-            elif library == 'yolov8': # yolov8の場合
                 faces = yol(filename, face_model) # yolov8で顔の検出を行う
+            faces = yol(filename, face_model) # yolov8で顔の検出を行う
         elif type == 'manual':
             if option == 'stamp':
                 # フォームからスタンプの画像を取得する
@@ -477,7 +449,6 @@ def more_manual_process():
     option = request.form.get('option')
     type = request.form.get('type')
     target = request.form.get('target')
-    library = request.form.get('library')
     faces = request.form.get('faces')
     if type == 'auto':
         if target == 'body':
@@ -486,18 +457,7 @@ def more_manual_process():
         elif target == 'background':
             bac(filename, human_model)
             return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
-        if library == 'dlib': # dlibの場合
-            faces0 = detector(img) # dlibで顔の検出を行う
-            faces = []
-            for face0 in faces0:
-                face = []
-                face.append(face0.left())
-                face.append(face0.top())
-                face.append(face0.right())
-                face.append(face0.bottom())
-                faces.append(face)
-        elif library == 'yolov8': # yolov8の場合
-            faces = yol(filename, face_model) # yolov8で顔の検出を行う
+        faces = yol(filename, face_model) # yolov8で顔の検出を行う
     elif type == 'manual':
         if option == 'stamp':
             # フォームからスタンプの画像を取得する
