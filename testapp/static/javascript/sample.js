@@ -1,3 +1,7 @@
+/*
+画像処理用のjs
+*/
+
 // スタンプ用の画像を選択するフォームを表示する関数
 function showStampForm() {
   var stamp_form = document.getElementById("stamp_form");

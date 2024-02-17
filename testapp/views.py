@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for
 from testapp import app
+from werkzeug.utils import secure_filename #動画扱うためのインポート
 import numpy as np
 import cv2
 import os
@@ -207,14 +208,16 @@ def bac(filename, model):
     cv2.imwrite('testapp/static/files/processed_' + filename, copied_image)
 
 @app.route('/')
+
+#時間差でサーバー内の画像や動画を消去する。
 def index():
     # 画像ファイルが保存されているディレクトリのパス
-    image_dirs = ['testapp/static/files/', 'testapp/static/stamp/']
+    image_dirs = ['testapp/static/files/', 'testapp/static/stamp/','testapp/static/videos/']
     # 現在の日時を取得
     now = datetime.datetime.now()
     # リスト内の各ディレクトリに対してループ
     for image_dir in image_dirs:
-        # ディレクトリ内の画像ファイルを走査
+        # image_dirディレクトリ内の画像と動画ファイルを操作
         for filename in os.listdir(image_dir):
             # 画像ファイルのフルパスを作成
             filepath = os.path.join(image_dir, filename)
@@ -513,3 +516,20 @@ def more_manual_process():
 @app.route('/intro')
 def intro():
     return render_template('htmls/intro.html')
+
+
+@app.route('/Vupload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+
+            filename = secure_filename(file.filename)
+            file.save(os.path.join('testapp/static/videos', filename))
+            #print("ファイル名あったぞ",file)
+            return render_template('htmls/v_prcs.html', filename=filename)
+    return render_template('htmls/v_upload.html')
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'mp4', 'mov'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

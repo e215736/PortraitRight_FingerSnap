@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="flex">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/newheader.png') }}" width="170" id="backButton">
+        </div>
+        <div class="text-container">
+            <h2>肖像権指パッチン</h2>
+            <a href='/intro' target="_blank">このサイトでできること</a>
+        </div>
+    </div>
+    <div class="text-container">
+    <p><h2>動画の顔を自動で隠します！</h2></p>
+
+    <a href='/'  style="font-size: 25px;">画像の顔を自動で隠します！</a>
+
+</div>
+<br>
+
+<form method="POST" enctype="multipart/form-data">
+
+    <h1>❶加工する動画をアップロードしてね</h1>
+        <label class="custom-file-upload">
+            <input type="file" name="file" id="image_data" style="display:none"  >
+            アップロードする画像を選ぶ
+        </label>
+        <div id="filename" class="filename-display">選択されていません</div>
+        <div id="error_message" class="error_message"></div>
+
+        <br>
+        <br>
+
+    <!-- ラジオボタンで処理を選択 -->
+    <div id="option_form" style="display: show;">
+        <h1>❷適用したいエフェクトを選択してね</h1>
+        <input id="item-2" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
+        <label class="radio-inline__label" for="item-2">
+            モザイク
+        </label>
+        <input id="item-3" class="radio-inline__input" type="radio" name="option" value="blur"/>
+        <label class="radio-inline__label" for="item-3">
+            ぼかし
+        </label>
+
+        </div>
+        <br>
+        <br>
+
+
+    <button type="submit" class="button_kako">
+        <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
+        加工する！
+    </button>
+    </div>
+</form>
+
+
+<script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
+
+{% endblock %}
