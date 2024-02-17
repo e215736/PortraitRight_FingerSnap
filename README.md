@@ -1,13 +1,13 @@
 # PortraitRight_FingerSnap
-![icon of this product](https://myoctocat.com/testapp/static/images/logo1.png)
+![icon of this product](/testapp/static/images/logo1.png)
 
 This repository was created by **NIN**, part of the **Ryukyu University [enpit2023](https://ie.u-ryukyu.ac.jp/enpit/information/) VIP Team**.
 You can use our product via PC or smartphone: [here](https://finger-snap.st.ie.u-ryukyu.ac.jp/).
 
-#Overview
+# Overview
 Want to use social media without worrying about portrait rights? For those who want to hide their faces in SNS image posts, our product, PortraitRight_FingerSnap, is a photo editing app. It streamlines the photo editing process by automatically processing faces and bodies, unlike traditional apps where images need manual editing. Additionally, it offers features like using custom images as face-covering stamps and batch processing up to 10 images simultaneously.
 
-##Description
+## Description
 Strengths:
 - Touch operation capability
 - No download required
@@ -23,26 +23,26 @@ Originality:
 - Can replace faces with favorite images as stamps.
 - Detection possible in any position or direction.
 
-##Environment Setup
+## Environment Setup
 Please install dependencies using pip:
 
 `pip install -r requirements.txt`
 
-##Preparing Pre-trained Models
+## Preparing Pre-trained Models
 
-###Download the yolov8x-seg.pt (Instance Segmentation model) and yolov8m.pt (Detection model) from the official GitHub of YOLO [here](https://docs.ultralytics.com/models/yolov8/).
+### Download the yolov8x-seg.pt (Instance Segmentation model) and yolov8m.pt (Detection model) from the official GitHub of YOLO [here](https://docs.ultralytics.com/models/yolov8/).
 
-###Download yolov8l_100e.pt from the GitHub repository available [here](https://github.com/Yusepp/YOLOv8-Face).
+### Download yolov8l_100e.pt from the GitHub repository available [here](https://github.com/Yusepp/YOLOv8-Face).
 
 
-##Usage
+## Usage
 Please refer to our product's deployment usage page: [here](https://finger-snap.st.ie.u-ryukyu.ac.jp/intro).
 
-##Execution
+## Execution
 Run the following command:
 `python server.py`
 
-##Author
+## Author
 
 - [e215736](https://github.com/e215736).
 - [e215719](https://github.com/e215719).
