@@ -32,7 +32,7 @@ Please install dependencies using pip:
 
 ### Download the yolov8x-seg.pt (Instance Segmentation model) and yolov8m.pt (Detection model) from the official GitHub of YOLO [here](https://docs.ultralytics.com/models/yolov8/).
 
-### Download yolov8l_100e.pt from the GitHub repository available [here](https://github.com/Yusepp/YOLOv8-Face).
+### Download yolov8l_100e.pt (Face Detection model) from the GitHub repository available [here](https://github.com/Yusepp/YOLOv8-Face).
 
 
 ## Usage
