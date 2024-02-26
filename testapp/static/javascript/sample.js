@@ -1,3 +1,73 @@
+/*
+画像処理用のjs
+*/
+
+// ページのリロード時にブラウザのスクロール位置の記憶を無効にする
+history.scrollRestoration = 'manual';
+
+// DOMが完全に読み込まれたときに最上部にスクロールする
+document.addEventListener('DOMContentLoaded', function () {
+  window.scrollTo(0, 0); // スクロール位置をページの最上部に設定
+  checkOption(); // 既存の関数を呼び出し
+});
+
+// ロゴ画像の要素を取得する
+var backButton = document.getElementById('backButton');
+// ロゴ画像のクリックイベントにリスナーを登録する
+backButton.addEventListener('click', function() {
+    var returnHTML = 'https://finger-snap.st.ie.u-ryukyu.ac.jp/';
+    // ページをリダイレクト
+    window.location.href = returnHTML;
+});
+
+// ファイル選択の要素を取得する
+var fileBox = document.getElementById("image_data");
+// ファイル選択のイベントハンドラとしてcheckOption()を登録する
+fileBox.addEventListener("change", checkOption);
+
+// アップロードできるファイルの最大数を定義する
+var maxFileCount = 10;
+
+// 選択されたファイルの数や名前を表示する関数
+function showFileName() {
+  // ファイル選択要素を取得する
+  var fileBox = document.getElementById("image_data");
+  // ファイル名表示要素を取得する
+  var fileName = document.getElementById("filename");
+  // エラーメッセージを表示する要素を取得する
+  var errorMessage = document.getElementById("error_message");
+  // 選択されたファイルの数を取得する
+  var fileCount = fileBox.files.length;
+  // ファイルの数が最大数を超えていたらエラーメッセージを表示する
+  if (fileCount > maxFileCount) {
+    // エラーメッセージを表示する要素の内容を変更する
+    errorMessage.textContent = "アップロードできるファイルは" + maxFileCount + "個までです。";
+    // ファイル選択要素の値を空にする
+    fileBox.value = "";
+    // ファイル名表示要素の内容を変更する
+    fileName.textContent = "選択されていません";
+  } else if (fileCount == 0) {
+    // ファイルの数に応じてファイル名表示要素の内容を変更する
+    // ファイルが選択されていない場合はメッセージを表示する
+    fileName.textContent = "選択されていません";
+    errorMessage.textContent = "";
+  } else if (fileCount == 1) {
+    // ファイルが1つ選択されている場合はそのファイル名を表示する
+    fileName.textContent = fileBox.files[0].name;
+    errorMessage.textContent = "";
+  } else {
+    // ファイルが複数選択されている場合はファイルの数を表示する
+    // もしくは、全てのファイル名を改行で区切って表示する
+    // fileName.textContent = fileCount + "個の画像が選択されました";
+    var fileNames = "";
+    for (var i = 0; i < fileCount; i++) {
+      fileNames += fileBox.files[i].name + "\n";
+    }
+    fileName.textContent = fileNames;
+    errorMessage.textContent = "";
+  }
+}
+
 // スタンプ用の画像を選択するフォームを表示する関数
 function showStampForm() {
   var stamp_form = document.getElementById("stamp_form");
@@ -111,15 +181,6 @@ function checkOption() {
   }
 }
 
-// ページのリロード時にブラウザのスクロール位置の記憶を無効にする
-history.scrollRestoration = 'manual';
-
-// DOMが完全に読み込まれたときに最上部にスクロールする
-document.addEventListener('DOMContentLoaded', function () {
-  window.scrollTo(0, 0); // スクロール位置をページの最上部に設定
-  checkOption(); // 既存の関数を呼び出し
-});
-
 // ラジオボタンが変更されたときにラジオボタンの値をチェックする
 var radios = document.querySelectorAll("input[name='option']");
 for (var i = 0; i < radios.length; i++) {
@@ -198,63 +259,6 @@ ds.addEventListener("click", function() {
   stamp.required = false;
 });
 });
-
-// ロゴ画像の要素を取得する
-var backButton = document.getElementById('backButton');
-// ロゴ画像のクリックイベントにリスナーを登録する
-backButton.addEventListener('click', function() {
-    var returnHTML = 'https://finger-snap.st.ie.u-ryukyu.ac.jp/';
-    // ページをリダイレクト
-    window.location.href = returnHTML;
-});
-
-// ファイル選択の要素を取得する
-var fileBox = document.getElementById("image_data");
-// ファイル選択のイベントハンドラとしてcheckOption()を登録する
-fileBox.addEventListener("change", checkOption);
-
-// アップロードできるファイルの最大数を定義する
-var maxFileCount = 10;
-
-// 選択されたファイルの数や名前を表示する関数
-function showFileName() {
-  // ファイル選択要素を取得する
-  var fileBox = document.getElementById("image_data");
-  // ファイル名表示要素を取得する
-  var fileName = document.getElementById("filename");
-  // エラーメッセージを表示する要素を取得する
-  var errorMessage = document.getElementById("error_message");
-  // 選択されたファイルの数を取得する
-  var fileCount = fileBox.files.length;
-  // ファイルの数が最大数を超えていたらエラーメッセージを表示する
-  if (fileCount > maxFileCount) {
-    // エラーメッセージを表示する要素の内容を変更する
-    errorMessage.textContent = "アップロードできるファイルは" + maxFileCount + "個までです。";
-    // ファイル選択要素の値を空にする
-    fileBox.value = "";
-    // ファイル名表示要素の内容を変更する
-    fileName.textContent = "選択されていません";
-  } else if (fileCount == 0) {
-    // ファイルの数に応じてファイル名表示要素の内容を変更する
-    // ファイルが選択されていない場合はメッセージを表示する
-    fileName.textContent = "選択されていません";
-    errorMessage.textContent = "";
-  } else if (fileCount == 1) {
-    // ファイルが1つ選択されている場合はそのファイル名を表示する
-    fileName.textContent = fileBox.files[0].name;
-    errorMessage.textContent = "";
-  } else {
-    // ファイルが複数選択されている場合はファイルの数を表示する
-    // もしくは、全てのファイル名を改行で区切って表示する
-    // fileName.textContent = fileCount + "個の画像が選択されました";
-    var fileNames = "";
-    for (var i = 0; i < fileCount; i++) {
-      fileNames += fileBox.files[i].name + "\n";
-    }
-    fileName.textContent = fileNames;
-    errorMessage.textContent = "";
-  }
-}
 
 function closeBox() {
   document.querySelector('.box2').style.display = 'none';

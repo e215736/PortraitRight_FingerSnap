@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for
 from testapp import app
+from werkzeug.utils import secure_filename #動画扱うためのインポート
 import numpy as np
 import cv2
 import os
@@ -129,18 +130,18 @@ def rest_process(faces, img, original):
 
 from ultralytics import YOLO
 face_model = YOLO(model="yolov8l_100e.pt")
-def yol(filename, model):
-    results = model.predict(source='testapp/static/files/' + filename)
+def yol(img, model):
+    results = model.predict(img)
     result = results[0]
-    bodys = []
+    faces = []
     for xyxy in result.boxes.xyxy:
-        body = []
-        body.append(xyxy[0])
-        body.append(xyxy[1])
-        body.append(xyxy[2])
-        body.append(xyxy[3])
-        bodys.append(body)
-    return bodys
+        face = []
+        face.append(xyxy[0])
+        face.append(xyxy[1])
+        face.append(xyxy[2])
+        face.append(xyxy[3])
+        faces.append(face)
+    return faces
 
 def get_segmented_image(image, coordinates_list):
     mask = np.zeros_like(image)
@@ -148,12 +149,11 @@ def get_segmented_image(image, coordinates_list):
     segmented_image = cv2.bitwise_and(image, mask)
     return segmented_image
 
-human_model = YOLO(model="yolov8x-seg.pt")
-def bod(filename, model):
-    image = cv2.imread('testapp/static/files/' + filename)
-    height, width, channels = image.shape
-    results = model.predict(source='testapp/static/files/' + filename, classes=[0])
-    copied_image = image.copy()
+human_model = YOLO(model="yolov8x-seg.pt")    
+def bod(img, model):
+    height, width, channels = img.shape
+    results = model.predict(img, classes=[0])
+    copied_image = img.copy()
     if results[0].masks is not None and len(results[0].masks) > 0:
         # 検出された人物の座標を保存するリスト
         coordinates_list = []
@@ -163,25 +163,23 @@ def bod(filename, model):
             # 座標情報を保存
             coordinates_list.append(coordinates)
             # セグメンテーションマスクから画像を生成
-            segmented_image = get_segmented_image(image, coordinates)
+            segmented_image = get_segmented_image(img, coordinates)
             # 人物領域をぼかす
             blurred_segment = cv2.blur(segmented_image, (int(width/20), int(height/20)))
             # ここでマスクの逆を取得
-            mask = np.zeros_like(image)
+            mask = np.zeros_like(img)
             cv2.drawContours(mask, [coordinates.astype(int)], -1, (255, 255, 255), thickness=cv2.FILLED)
             mask_inv = cv2.bitwise_not(mask)
             # オリジナル画像にぼかした人物領域を適用
             background = cv2.bitwise_and(copied_image, mask_inv)
             final_human_segment = cv2.add(background, blurred_segment)
             copied_image = final_human_segment.copy()
-    # 生成した画像を保存
-    cv2.imwrite('testapp/static/files/processed_' + filename, copied_image)
+    return copied_image
     
-def bac(filename, model):
-    image = cv2.imread('testapp/static/files/' + filename)
-    height, width, channels = image.shape
-    results = model.predict(source='testapp/static/files/' + filename, classes=[0])
-    copied_image = image.copy()
+def bac(img, model):
+    height, width, channels = img.shape
+    results = model.predict(img, classes=[0])
+    copied_image = img.copy()
     # 背景領域をぼかす
     copied_image = cv2.blur(copied_image, (int(width/20), int(height/20)))
     if results[0].masks is not None and len(results[0].masks) > 0:
@@ -193,9 +191,9 @@ def bac(filename, model):
             # 座標情報を保存
             coordinates_list.append(coordinates)
             # セグメンテーションマスクから画像を生成
-            segmented_image = get_segmented_image(image, coordinates)
+            segmented_image = get_segmented_image(img, coordinates)
             # ここでマスクの逆を取得
-            mask = np.zeros_like(image)
+            mask = np.zeros_like(img)
             cv2.drawContours(mask, [coordinates.astype(int)], -1, (255, 255, 255), thickness=cv2.FILLED)
             mask_inv = cv2.bitwise_not(mask)
             # ぼかした背景に人物領域を適用
@@ -203,18 +201,76 @@ def bac(filename, model):
             background = cv2.bitwise_and(copied_image, mask_inv)
             final_human_segment = cv2.add(foreground, background)
             copied_image = final_human_segment.copy()
-    # 生成した画像を保存
-    cv2.imwrite('testapp/static/files/processed_' + filename, copied_image)
+    return copied_image
+
+def pro_video(filename, video, option):
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v') # H.264のコーデックはopencvと相性が悪い
+    out = cv2.VideoWriter('testapp/static/videos/processed_' + filename, fourcc, int(video.get(cv2.CAP_PROP_FPS)), (int(video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+    if option == "mosaic":
+        while True:
+            ret, frame = video.read() #retは画像情報が入っているかどうかTrueで示す
+            if not ret:
+                break
+            faces = yol(frame, face_model)
+            mosaic_process(faces, frame) # モザイク処理を行う
+            out.write(frame)
+    elif option == "blur":
+        while True:
+            ret, frame = video.read()
+            if not ret:
+                break
+            faces = yol(frame, face_model)
+            blur_process(faces, frame) # ぼかし処理を行う
+            out.write(frame)
+    elif option == "body":
+        while True:
+            ret, frame = video.read()
+            if not ret:
+                break
+            frame = bod(frame, human_model)
+            out.write(frame)
+    elif option == "background":
+        while True:
+            ret, frame = video.read()
+            if not ret:
+                break
+            frame = bac(frame, human_model)
+            out.write(frame)
+    video.release()
+    out.release()
+
+def pro_video2(filename, video, option, stamp, stamp_filename):
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v') # H.264のコーデックはopencvと相性が悪い
+    out = cv2.VideoWriter('testapp/static/videos/processed_' + filename, fourcc, int(video.get(cv2.CAP_PROP_FPS)), (int(video.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+    if option == "stamp":
+        while True:
+            ret, frame = video.read()
+            if not ret:
+                break
+            faces = yol(frame, face_model)
+            stamp_process(faces, frame, stamp, stamp_filename) # スタンプ処理を行う
+            out.write(frame)
+    elif option == "stamp2":
+        while True:
+            ret, frame = video.read()
+            if not ret:
+                break
+            faces = yol(frame, face_model)
+            stamp_process2(faces, frame, stamp, stamp_filename) # スタンプ処理を行う
+            out.write(frame)
+    video.release()
+    out.release()
 
 @app.route('/')
+#時間差でサーバー内の画像や動画を消去する。
 def index():
     # 画像ファイルが保存されているディレクトリのパス
-    image_dirs = ['testapp/static/files/', 'testapp/static/stamp/']
+    image_dirs = ['testapp/static/files/', 'testapp/static/stamp/','testapp/static/videos/']
     # 現在の日時を取得
     now = datetime.datetime.now()
     # リスト内の各ディレクトリに対してループ
     for image_dir in image_dirs:
-        # ディレクトリ内の画像ファイルを走査
+        # image_dirディレクトリ内の画像と動画ファイルを操作
         for filename in os.listdir(image_dir):
             # 画像ファイルのフルパスを作成
             filepath = os.path.join(image_dir, filename)
@@ -243,20 +299,22 @@ def upload():
             file.save('testapp/static/files/' + filename)
             img = cv2.imread('testapp/static/files/' + filename)
             if option == 'mosaic':
-                faces = yol(filename, face_model) # yolov8で顔の検出を行う
+                faces = yol(img, face_model) # yolov8で顔の検出を行う
                 mosaic_process(faces, img) # モザイク処理を行う
                 cv2.imwrite('testapp/static/files/processed_' + filename, img)
             elif option == 'blur':
                 if target2 == 'body':
-                    bod(filename, human_model)
+                    img = bod(img, human_model)
+                    cv2.imwrite('testapp/static/files/processed_' + filename, img)
                 elif target2 == 'background':
-                    bac(filename, human_model)
+                    img = bac(img, human_model)
+                    cv2.imwrite('testapp/static/files/processed_' + filename, img)
                 elif target2 == 'face':
-                    faces = yol(filename, face_model) # yolov8で顔の検出を行う
+                    faces = yol(img, face_model) # yolov8で顔の検出を行う
                     blur_process(faces, img) # ぼかし処理を行う
                     cv2.imwrite('testapp/static/files/processed_' + filename, img)
             elif option == 'stamp':
-                faces = yol(filename, face_model) # yolov8で顔の検出を行う
+                faces = yol(img, face_model) # yolov8で顔の検出を行う
                 # フォームからスタンプの画像を取得する
                 stamp_file = request.files['stamp']
                 # 隠しフィールドからデフォルトのスタンプのファイル名を取得する
@@ -301,13 +359,14 @@ def upload():
         if type == 'auto':
             if option == 'blur':
                 if target == 'body':
-                    bod(filename, human_model)
+                    img = bod(img, human_model)
+                    cv2.imwrite('testapp/static/files/processed_' + filename, img)
                     return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
-                elif target == 'background':
-                    bac(filename, human_model)
+                elif target2 == 'background':
+                    img = bac(img, human_model)
+                    cv2.imwrite('testapp/static/files/processed_' + filename, img)
                     return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
-                faces = yol(filename, face_model) # yolov8で顔の検出を行う
-            faces = yol(filename, face_model) # yolov8で顔の検出を行う
+            faces = yol(img, face_model) # yolov8で顔の検出を行う
         elif type == 'manual':
             if option == 'stamp':
                 # フォームからスタンプの画像を取得する
@@ -452,12 +511,14 @@ def more_manual_process():
     faces = request.form.get('faces')
     if type == 'auto':
         if target == 'body':
-            bod(filename, human_model)
+            img = bod(img, human_model)
+            cv2.imwrite('testapp/static/files/processed_' + filename, img)
             return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
         elif target == 'background':
-            bac(filename, human_model)
+            img = bac(img, human_model)
+            cv2.imwrite('testapp/static/files/processed_' + filename, img)
             return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
-        faces = yol(filename, face_model) # yolov8で顔の検出を行う
+        faces = yol(img, face_model) # yolov8で顔の検出を行う
     elif type == 'manual':
         if option == 'stamp':
             # フォームからスタンプの画像を取得する
@@ -510,6 +571,59 @@ def more_manual_process():
     cv2.imwrite('testapp/static/files/processed_' + filename, img)
     return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
 
+from moviepy.editor import VideoFileClip # moviepyをインポートする
+# 動画アップロードページ
+@app.route('/Vupload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['video_data'] # フォームからアップロードされた動画ファイルを取得する
+        filename = secure_filename(file.filename)
+        original = filename
+        file.save('testapp/static/videos/' + filename)
+        video = cv2.VideoCapture('testapp/static/videos/' + filename) # 動画ファイルを読み込む
+        option = request.form.get('option')
+        target = request.form.get('target')
+        if option == 'blur':
+            if target == 'body':
+                pro_video(filename, video, "body")
+            elif target == 'background':
+                pro_video(filename, video, "background")
+            else:
+                pro_video(filename, video, "blur")
+        else:
+            if option == 'mosaic':
+                pro_video(filename, video, "mosaic")
+            elif option == 'stamp':
+                # フォームからスタンプの画像を取得する
+                stamp_file = request.files['stamp']
+                # 隠しフィールドからデフォルトのスタンプのファイル名を取得する
+                default_stamp = request.form.get('default_stamp')
+                # どちらかがあれば処理を続ける
+                if stamp_file or default_stamp:
+                    # フォームからスタンプの画像があればそれを使う
+                    if stamp_file:
+                        stamp_filename = stamp_file.filename
+                        stamp_filename = str(time.time()) + '_' + stamp_filename
+                        stamp_file.save('testapp/static/stamp/' + stamp_filename)
+                        stamp = cv2.imread('testapp/static/stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
+                    # フォームからスタンプの画像がなければデフォルトのスタンプを使う
+                    else:
+                        stamp_filename = default_stamp
+                        stamp = cv2.imread('testapp/static/default_stamp/' + stamp_filename, cv2.IMREAD_UNCHANGED)
+                if stamp.shape[2] == 4:
+                    pro_video2(filename, video, "stamp", stamp, stamp_filename)
+                else:
+                    pro_video2(filename, video, "stamp2", stamp, stamp_filename)
+        # moviepyを使って音声を追加する
+        video_clip = VideoFileClip('testapp/static/videos/' + filename) # 処理前の動画ファイルを読み込む
+        audio_clip = video_clip.audio # 動画ファイルから音声を抽出する
+        video_clip = VideoFileClip('testapp/static/videos/processed_' + filename) # 処理後の動画ファイルを読み込む
+        video_clip = video_clip.set_audio(audio_clip) # 動画ファイルに音声をセットする
+        video_clip.write_videofile('testapp/static/videos/processed_with_sound_' + filename, codec='libx264') # 音声付きの動画ファイルとして保存する
+        return render_template('htmls/v_proc.html', original=original, filename=filename, processed='processed_with_sound_' + filename)
+    return render_template('htmls/v_upload.html', default_stamps=default_stamps)
+
+# 使い方ページ
 @app.route('/intro')
 def intro():
     return render_template('htmls/intro.html')
