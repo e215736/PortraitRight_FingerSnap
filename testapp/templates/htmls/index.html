@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
-
 {% block content %}
+
 <div class="container">
     <div class="flex">
         <div class="image-container">
@@ -12,21 +12,23 @@
         </div>
     </div>
     <div class="text-container">
-    <p><h2>画像の顔を自動で隠します！</h2></p>
-</div>
-<br>
-<!-- ファイル選択とアップロードのフォーム -->
-<form action="/upload" method="post" enctype="multipart/form-data">
-    <!-- <div class="section"> -->
-    <h1>❶加工する画像をアップロードしてね</h1>
-        <label class="custom-file-upload">
-            <input type="file" name="image_data" id="image_data" accept="image/*" style="display:none" multiple required onchange="showFileName()" >
-            アップロードする画像を選ぶ
-        </label>
-        <div id="filename" class="filename-display">選択されていません</div>
-        <div id="error_message" class="error_message"></div>
-    <!-- </div> -->
+        <p><h2>画像の顔を自動で隠します！</h2></p>
+        <a href='/Vupload' target="_blank" style="font-size: 25px;">動画の顔を自動で隠します！</a>
+    </div>
     <br>
+
+    <!-- ファイル選択とアップロードのフォーム -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <!-- <div class="section"> -->
+        <h1>❶加工する画像をアップロードしてね</h1>
+            <label class="custom-file-upload">
+                <input type="file" name="image_data" id="image_data" accept="image/*" style="display:none" multiple required onchange="showFileName()" >
+                アップロードする画像を選ぶ
+            </label>
+            <div id="filename" class="filename-display">選択されていません</div>
+            <div id="error_message" class="error_message"></div>
+        <!-- </div> -->
+        <br>
 
     <!-- ラジオボタンで処理を選択 -->
     <div id="option_form" style="display: show;">

@@ -35,11 +35,11 @@
 <div class="button.btn ">
     <div class="container">
         <form>
-        <option value="{{ filename }}">{{ original }}</option>
-        <a href="{{ url_for('static', filename='files/' + processed) }}" download="downloaded_{{ filename }}" class="button" role="button">
-            <img src="{{ url_for('static', filename='images/SVGs/download.svg') }}" alt="Download Processed Image" class="svg-icon" style="width: 1em; height: 1em; "> 
-            加工後の画像をダウンロードする
-        </a>
+            <option value="{{ filename }}">{{ original }}</option>
+            <a href="{{ url_for('static', filename='files/' + processed) }}" download="downloaded_{{ filename }}" class="button" role="button">
+                <img src="{{ url_for('static', filename='images/SVGs/download.svg') }}" alt="Download Processed Image" class="svg-icon" style="width: 1em; height: 1em; "> 
+                加工後の画像をダウンロードする
+            </a>
         </form>
     </div>
 </div>
@@ -70,8 +70,14 @@
             </form>
             <form action="/" method="get">
                 <button type="submit" class="button2">
-                    <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
+                    <img src="{{ url_for('static', filename='images/SVGs/image-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
                     新しく画像を加工する！
+                </button>
+            </form>
+            <form action="/Vupload" method="get">
+                <button type="submit" class="button2">
+                    <img src="{{ url_for('static', filename='images/SVGs/camera-video-fill.svg') }}" alt=" Process New Video" class="svg-icon" style="width: 1em; height: 1em;">
+                    新しく動画を加工する！
                 </button>
             </form>
         </div>
@@ -104,8 +110,14 @@
             </form>
             <form action="/" method="get">
                 <button type="submit" class="button">
-                    <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
+                    <img src="{{ url_for('static', filename='images/SVGs/image-fill.svg') }}" alt=" Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
                     新しく画像を加工する！
+                </button>
+            </form>
+            <form action="/Vupload" method="get">
+                <button type="submit" class="button">
+                    <img src="{{ url_for('static', filename='images/SVGs/camera-video-fill.svg') }}" alt=" Process New Video" class="svg-icon" style="width: 1em; height: 1em;">
+                    新しく動画を加工する！
                 </button>
             </form>
         </div>

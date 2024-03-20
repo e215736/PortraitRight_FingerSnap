@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
-
 {% block content %}
+
 <div class="container">
     <div class="flex">
         <div class="image-container">
@@ -18,47 +18,48 @@
         </div>
         <div class="text-container">
             <h3>肖像権指パッチン</h3>
-            <a href='/intro' target="_blank">このサイトの使い方</a>
+            <a href='/intro' target="_blank">このサイトでできること</a>
         </div>
     </div>
     <div class="text-container">
-        <p><h2>画像の加工が完了しました</h2></p>
+        <p><h2>動画の加工が完了しました</h2></p>
     </div>
 </div>
 <br>
 
 <!-- 処理前の画像と処理後の画像を表示 -->
-{% for original, filename in images.items() %}
-<div class="flex">
-    <img src="{{ url_for('static', filename='files/' + original) }}" alt="filename" width="50%">
-    <img src="{{ url_for('static', filename='files/' + filename) }}" alt="processed" width="50%">
-</div>
+<form method="POST" enctype="multipart/form-data">
+    <div class="flex">
+        <video width="50%" controls><source src="{{ url_for('static', filename='videos/' + filename) }}" alt="filename"></video>
+        <video width="50%" controls><source src="{{ url_for('static', filename='videos/' + processed) }}" alt="processed"></video>
+    </div>
+</form>
+
 <div class="button.btn ">
     <div class="container">
         <form>
-        <option value="{{ filename }}">{{ original }}</option>
-        <a href="{{ url_for('static', filename='files/' + filename) }}" download="downloaded_{{ filename }}" class="button" role="button">
-            <img src="{{ url_for('static', filename='images/SVGs/download.svg') }}" alt="Download Processed Image" class="svg-icon" style="width: 1em; height: 1em; "> 
-            加工後の画像をダウンロードする
-        </a>
+            <option value="{{ filename }}">{{ original }}</option>
+            <a href="{{ url_for('static', filename='videos/' + processed) }}" download="downloaded_{{ filename }}" class="button" role="button">
+                <img src="{{ url_for('static', filename='images/SVGs/download.svg') }}" alt="Download Processed Video" class="svg-icon" style="width: 1em; height: 1em; "> 
+                加工後の動画をダウンロードする
+            </a>
         </form>
     </div>
 </div>
 <br>
-{% endfor %}
 
 <div class="for-pc">
     <div class="button.btn ">
         <div class="container">
-            <form action="/" method="get">
+            <form action="/Vupload" method="get">
                 <button type="submit" class="button2">
-                    <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
+                    <img src="{{ url_for('static', filename='images/SVGs/image-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
                     新しく画像を加工する！
                 </button>
             </form>
             <form action="/Vupload" method="get">
                 <button type="submit" class="button2">
-                    <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Video" class="svg-icon" style="width: 1em; height: 1em;">
+                    <img src="{{ url_for('static', filename='images/SVGs/camera-video-fill.svg') }}" alt="Process New Video" class="svg-icon" style="width: 1em; height: 1em;">
                     新しく動画を加工する！
                 </button>
             </form>
@@ -72,13 +73,13 @@
         <div class="container">
             <form action="/" method="get">
                 <button type="submit" class="button">
-                    <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Video" class="svg-icon" style="width: 1em; height: 1em;">
+                    <img src="{{ url_for('static', filename='images/SVGs/image-fill.svg') }}" alt="Process New Image" class="svg-icon" style="width: 1em; height: 1em;">
                     新しく画像を加工する！
                 </button>
             </form>
             <form action="/Vupload" method="get">
                 <button type="submit" class="button">
-                    <img src="{{ url_for('static', filename='images/SVGs/plus-circle-fill.svg') }}" alt="Process New Video" class="svg-icon" style="width: 1em; height: 1em;">
+                    <img src="{{ url_for('static', filename='images/SVGs/camera-video-fill.svg') }}" alt="Process New Video" class="svg-icon" style="width: 1em; height: 1em;">
                     新しく動画を加工する！
                 </button>
             </form>
@@ -94,5 +95,7 @@
       src="https://forms.gle/obtcKXzo9Jvd2Rfw7"
       width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
 </div>
-<script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
+
+<script src="{{ url_for('static', filename='javascript/v_sample.js') }}"></script>
+
 {% endblock %}

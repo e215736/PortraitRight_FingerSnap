@@ -1,0 +1,186 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="flex">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/newheader.png') }}" width="170" id="backButton">
+        </div>
+        <div class="text-container">
+            <h2>肖像権指パッチン</h2>
+            <a href='/intro' target="_blank">このサイトでできること</a>
+        </div>
+    </div>
+    <div class="text-container">
+        <p><h2>動画の顔を自動で隠します！</h2></p>
+        <a href='/'  style="font-size: 25px;">画像の顔を自動で隠します！</a>
+    </div>
+    <br>
+
+    <!-- ファイル選択とアップロードのフォーム -->
+    <form action="/Vupload" method="post" enctype="multipart/form-data">
+        <h1>❶加工する動画をアップロードしてね</h1>
+        <label class="custom-file-upload">
+            <input type="file" name="video_data" id="video_data" accept="video/*" style="display:none" required onchange="showFileName()" >
+            <!-- <input type="file" name="file" id="video_data" accept="video/*" style="display:none" multiple required onchange="showFileName()" > -->
+            アップロードする動画を選ぶ
+        </label>
+        <div id="filename" class="filename-display">15秒以内の動画を選択してね</div>
+        <div id="error_message" class="error_message"></div>
+        <br>
+
+    <!-- ラジオボタンで処理を選択 -->
+    <div id="option_form" style="display: show;">
+        <h1>❷適用したいエフェクトを選択してね</h1>
+        <input id="item-2" class="radio-inline__input" type="radio" name="option" value="mosaic" checked="checked"/>
+        <label class="radio-inline__label" for="item-2">
+            モザイク
+        </label>
+        <input id="item-3" class="radio-inline__input" type="radio" name="option" value="blur"/>
+        <label class="radio-inline__label" for="item-3">
+            ぼかし
+        </label>
+        <input id="stamp" class="radio-inline__input" type="radio" name="option" value="stamp"/>
+        <label class="radio-inline__label" for="stamp">
+            スタンプ
+        </label>
+            <!-- スタンプ用の画像を選択するフォームを追加する -->
+            <div id="stamp_form" style="display: none;">
+                <h3>スタンプ用の画像ファイルを選択してね</h3>
+                <label class="custom-file-upload">
+                    <input type="file" name="stamp" accept="image/*" style="display:none"
+                        onchange="document.getElementById('filename2').textContent = this.files[0].name">
+                    スタンプに使いたい画像がある方!押して
+                </label>
+                <div id="filename2" class="filename-display">選択されていません</div>
+                <h3>または、デフォルトのスタンプをクリックしてね</h3>
+                <!-- デフォルトのスタンプを画像として表示する -->            
+                <div class="for-pc2">
+                    <div id="default_stamps" class="stamp-container">
+                        {% for stamp in default_stamps %}
+                        <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="for-sp2">
+                    <div id="default_stamps">
+                        {% for stamp in default_stamps %}
+                        <img src="{{ url_for('static', filename='default_stamp/' + stamp) }}" alt="{{ stamp }}" class="default_stamp">
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- 隠しフィールドで選択したデフォルトのスタンプのファイル名を送信する -->
+                <input type="hidden" name="default_stamp" id="default_stamp">
+            </div>
+        <br>
+        <br>
+    </div>
+
+    <div id="target_form" style="display: none;">
+        <!-- ラジオボタンで処理を選択 -->
+        <h1>❸自動処理での加工対象を選択してね</h1>
+        <div class="option-container">
+            <input id="face" class="radio-inline__input" type="radio" name="target" value="face" checked="checked"/>
+            <label class="radio-inline__label" for="face">
+                顔のみ
+                <div id="balloonE" class="balloon">全ての顔を対象</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="body" class="radio-inline__input" type="radio" name="target" value="body"/>
+            <label class="radio-inline__label" for="body">
+                全身
+                <div id="balloonF" class="balloon">全身自動ぼかし</div>
+            </label>
+        </div>
+        <div class="option-container">
+            <input id="background" class="radio-inline__input" type="radio" name="target" value="background"/>
+            <label class="radio-inline__label" for="background">
+                背景のみ
+                <div id="balloonG" class="balloon">背景自動ぼかし</div>
+            </label>
+        </div>
+        <br>
+        <br>
+    </div>
+
+    <button type="submit" class="button_kako">
+        <img src="{{ url_for('static', filename='images/SVGs/hand-index-thumb-fill.svg') }}" alt="Process" class="svg-icon" style="width: 1em; height: 1em;">
+        加工する！
+    </button>
+</div>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(function(){
+  // フォームが送信されたとき
+  $("form").submit(function(){
+    // ローディング画像を表示する
+    $(".loader").show();
+    // ローディングテキストを表示する
+    $(".loading_txt").show();
+    // 画像の数を指定する
+    var num = 100;
+    // 画像のURLを指定する
+    var src = "{{ url_for('static', filename='images/fingersnap.gif') }}";
+    // 画像を生成する関数
+    function createImage(){
+      // img要素を作成する
+      var img = $("<img>");
+      // 画像の属性を設定する
+      img.attr("src", src);
+      img.css("width", "10%");
+      img.css("height", "auto");
+      // 画像を.loaderに追加する
+      $(".loader").append(img);
+    }
+    // 画像の数だけ繰り返す
+    for(var i = 0; i < num; i++){
+      // 画像を生成する
+      createImage();
+    }
+  });
+});
+</script>
+
+<style>
+    /* ローディング画像のスタイル */
+    .loader {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      text-align: center; /* 横位置を中央に */
+    }
+
+    /* ローディングテキストのスタイル */
+    .loading_txt {
+      display: none;
+      position: fixed;
+      top: 80%; /* 画像の下端から25%の位置にテキストを表示する */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      z-index: 9999;
+      vertical-align: middle; /* 縦位置を中央に */
+    }
+</style>
+
+<!-- ローディング画像 -->
+<div class="loader">
+</div>
+
+<!-- ローディングテキスト -->
+<div class="loading_txt">
+    処理中です。しばらくお待ちください。
+</div>
+
+<script src="{{ url_for('static', filename='javascript/v_sample.js') }}"></script>
+
+{% endblock %}
