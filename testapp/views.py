@@ -362,7 +362,7 @@ def upload():
                     img = bod(img, human_model)
                     cv2.imwrite('testapp/static/files/processed_' + filename, img)
                     return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
-                elif target2 == 'background':
+                elif target == 'background':
                     img = bac(img, human_model)
                     cv2.imwrite('testapp/static/files/processed_' + filename, img)
                     return render_template('htmls/processed.html', original=original, filename=filename, processed='processed_' + filename)
